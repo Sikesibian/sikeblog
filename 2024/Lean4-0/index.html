@@ -182,7 +182,11 @@ lake run &lt;script><span aria-hidden="true" class="line-numbers-rows"><span></s
 <span class="token key property">name</span> <span class="token punctuation">=</span> <span class="token string">"mathlib"</span>
 <span class="token key property">git</span> <span class="token punctuation">=</span> <span class="token string">"https://github.com/leanprover-community/mathlib4.git"</span>
 <span class="token key property">rev</span> <span class="token punctuation">=</span> <span class="token string">"v4.11.0"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>lean-toolchain</code> 内容可以改为：<code>leanprover/lean4:v4.11.0</code></p>
+<p><code>lean-toolchain</code> 内容可以改为：<code>leanprover/lean4:v4.11.0</code> （等价于 <code>curl -L https://raw.githubusercontent.com/leanprover-community/mathlib4/master/lean-toolchain -o lean-toolchain</code>）</p>
+<blockquote>
+<p>如果你是 <code>leanfile.lean</code>，则在文件中添加：<code>require mathlib from git &quot;https://github.com/leanprover-community/mathlib4&quot;</code> 即可。</p>
+<p>当然你也可以选择在安装项目的时候</p>
+</blockquote>
 <p>这时运行 <code>lake update</code> ，额，它就会疯狂安装包。</p>
 <p><img src="./img/lean4_0/1732818100216.png" alt="1732818100216.png"></p>
 <p>下面这个命令可以下载预编译的文件：</p>
@@ -201,7 +205,7 @@ lake run &lt;script><span aria-hidden="true" class="line-numbers-rows"><span></s
                  
                   
                     <div class="tag-item">
-                      <a href="/tags/Lean/"><i class="fa fa-tag"></i>&nbsp;&nbsp;Lean</a>
+                      <a href="/tags/Lean4/"><i class="fa fa-tag"></i>&nbsp;&nbsp;Lean4</a>
                     </div>
                   
                 
