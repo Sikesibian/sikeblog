@@ -98,9 +98,8 @@
 <p><img src="./img/lean4_0/1732761759564.png" alt="1732761759564.png"></p>
 <p>跟随右侧导航走即可：</p>
 <p><img src="./img/lean4_0/1732761709253.png" alt="1732761709253.png"></p>
-<p>记得给<code>elan</code> 设置一下环境变量：</p>
+<p>记得给<code>elan</code> 设置一下环境变量，<code>elan</code> 一般在这个文件夹下（<code>C:\User\&lt;User Name&gt;\.elan\bin\</code>）：</p>
 <p><img src="./img/lean4_0/1732764313637.png" alt="1732764313637.png"></p>
-<p>这个文件夹下（<code>C:\User\&lt;User Name&gt;\.elan\bin\</code>）</p>
 <p>编写一个测试文件：</p>
 <p><img src="./img/lean4_0/1732761916064.png" alt="1732761916064.png"></p>
 <p>点击右侧 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∀</mi></mrow><annotation encoding="application/x-tex">\forall</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord">∀</span></span></span></span> 符号，选择<code>Toggle Infoview</code> 可以看到一些预览信息（或快捷键<code>Ctrl+Shift+Enter</code>：</p>
@@ -185,7 +184,8 @@ lake run &lt;script><span aria-hidden="true" class="line-numbers-rows"><span></s
 <p><code>lean-toolchain</code> 内容可以改为：<code>leanprover/lean4:v4.11.0</code> （等价于 <code>curl -L https://raw.githubusercontent.com/leanprover-community/mathlib4/master/lean-toolchain -o lean-toolchain</code>）</p>
 <blockquote>
 <p>如果你是 <code>leanfile.lean</code>，则在文件中添加：<code>require mathlib from git &quot;https://github.com/leanprover-community/mathlib4&quot;</code> 即可。</p>
-<p>当然你也可以选择在安装项目的时候</p>
+<p>当然你也可以选择在安装项目的时候使用指令：</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell">lake <span class="token operator">+</span>leanprover-community/mathlib4:lean-toolchain new &lt;your_project_name> math<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </blockquote>
 <p>这时运行 <code>lake update</code> ，额，它就会疯狂安装包。</p>
 <p><img src="./img/lean4_0/1732818100216.png" alt="1732818100216.png"></p>
