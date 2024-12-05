@@ -6,7 +6,7 @@
   <link rel="alternate icon" type="image/png" href="/img/favicon.ico">
   <title>
     
-      Lean4 的基本使用 |
+      Lean4-1 —— Lean4 的基本使用 |
      
     Sikesibian&#39;s Blog
   </title>
@@ -89,11 +89,160 @@
       <div class="post-details">
           
             <div class="post-title">
-              <h1>Lean4 的基本使用</h1>
+              <h1>Lean4-1 —— Lean4 的基本使用</h1>
             </div>
           
           <div class="post-content">
-            
+            <p><strong>上一篇：<a href="/2024/Lean4-0/">Lean4-0 —— Lean4 的安装</a></strong></p>
+<p>注释：单行注释：<code>-- 注释</code>，多行注释：<code>/- 多行注释 -/</code>。</p>
+<h1>1. Lean4 中的声明、检查与求值</h1>
+<p>下面先列出对应的关键字：</p>
+<ul>
+<li><strong>声明</strong> <code>def</code>：用于声明一个新的常量</li>
+<li><strong>检查</strong> <code>#check</code>：用于检查一个对象的类型</li>
+<li><strong>求值</strong> <code>#eval</code>：用于计算给出的表达式</li>
+</ul>
+<blockquote>
+<p>以井号开头的都是用于向Lean系统询问信息的辅助命令，比如这里的 <code>#check</code> 和 <code>#eval</code>。</p>
+</blockquote>
+<p>例子：</p>
+<pre class="line-numbers language-lean" data-language="lean"><code class="language-lean">&#x2F;- 定义常数 -&#x2F;
+def m : Nat :&#x3D; 1
+def b : Bool :&#x3D; true
+&#x2F;- 检查类型 -&#x2F;
+#check m
+#check b
+&#x2F;- 求值 -&#x2F;
+#eval m + 6
+#eval b &amp;&amp; false<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1>2. Lean4 的基本使用</h1>
+<blockquote>
+<p><strong>Lean中的任意表达式都有一个类型。</strong> Lean是用于构建复杂表达式的工具，基于 <strong>依值类型论（Dependent Type Theory）</strong> 这一形式语言。</p>
+</blockquote>
+<h2 id="2-0-依值类型论">2.0 依值类型论</h2>
+<p><strong>类型论</strong>是一类基于 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi></mrow><annotation encoding="application/x-tex">\lambda</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault">λ</span></span></span></span> 演算的形式理论的同层，所有数学对象都有各自的类型。而<strong>依值类型论</strong>是一种<strong>类型的定义可以依赖于值（由值所推断）的类型论</strong>，可以写成：</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>⊢</mo><mi>A</mi><mtext> type</mtext></mrow><annotation encoding="application/x-tex">\Gamma \vdash A\text{ type}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord">Γ</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">⊢</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">A</span><span class="mord text"><span class="mord"> type</span></span></span></span></span></span></p>
+<p>依值类型论的一些概念并不容易理解，但是我们可以将依值类型论和我们熟知的数理逻辑作如下对应（但不能完全等同）：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">数理逻辑</th>
+<th style="text-align:center">依值类型论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">语境</td>
+<td style="text-align:center">语境</td>
+</tr>
+<tr>
+<td style="text-align:center">命题</td>
+<td style="text-align:center">类型</td>
+</tr>
+<tr>
+<td style="text-align:center">命题宇宙</td>
+<td style="text-align:center">宇宙</td>
+</tr>
+<tr>
+<td style="text-align:center">全称量词</td>
+<td style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Π</mi></mrow><annotation encoding="application/x-tex">\Pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">Π</span></span></span></span> 类型</td>
+</tr>
+<tr>
+<td style="text-align:center">存在量词</td>
+<td style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Σ</mi></mrow><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">Σ</span></span></span></span> 类型</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>语境</strong>：相继式 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⊢</mo></mrow><annotation encoding="application/x-tex">\vdash</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mrel">⊢</span></span></span></span> 左边的部分，也称上下文或先决条件。</li>
+<li><strong>类型</strong>：类似于集合，但与集合不同。类型直接通过规则定义。</li>
+<li><strong>宇宙</strong>：可以理解为“类型的类型”，虽然这样并不准确。</li>
+<li><strong><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Σ</mi></mrow><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">Σ</span></span></span></span> 类型</strong>：定义的一种新类型，类似于将类型合并整合成一个新类型。</li>
+<li><strong><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Π</mi></mrow><annotation encoding="application/x-tex">\Pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">Π</span></span></span></span> 类型</strong>：定义的一种新类型，展现出来的类型随输入实例类型变化。</li>
+</ul>
+<h2 id="2-1-lean4-编程基础">2.1 Lean4 编程基础</h2>
+<h3 id="2-1-1-lean4-的-hello-world">2.1.1 Lean4 的 “Hello, World!”</h3>
+<h4 id="函数的形式">函数的形式</h4>
+<p>在我们学习C语言等高级语言时，函数往往都写成 <code>func(x)</code> 的形式，而在 Lean （或 Haskell、Lisp 等）语言中朋友们应当习惯直接将参数写在函数后面：</p>
+<pre class="line-numbers language-lean" data-language="lean"><code class="language-lean">#eval String.append &quot;Hello, &quot; &quot;World!&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>~实际上实现的效果就是：<code>String.append(&quot;Hello, &quot;, &quot;World&quot;)</code>，但是这样写语法并不正确，所以这里用一根删除线划掉~</p>
+<p>这样的函数也是有一定执行顺序的，比如对比下面两个语句：</p>
+<pre class="line-numbers language-lean" data-language="lean"><code class="language-lean">-- #eval String.append String.append &quot;Hello&quot; &quot;, &quot; &quot;world!&quot; （不可执行）
+#eval String.append (String.append &quot;Hello&quot; &quot;, &quot;) &quot;world!&quot;
+-- #eval String.append &quot;Hello&quot; String.append &quot;, &quot; &quot;world!&quot; （不可执行）
+#eval String.append &quot;Hello&quot; (String.append &quot;, &quot; &quot;world!&quot;)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>而这个函数的值就是这个表达式所计算出来的值。</p>
+<h4 id="条件表达式-ite表达式">条件表达式（ITE表达式）</h4>
+<p>ITE表达式即 If-Then-Else 表达式，实际上就类似于 C语言 中的三目运算符 <code>; ?</code> 或 Python 中的 <code>&lt;statement1&gt; if &lt;condition&gt; else &lt;statement2&gt;</code> ，比如：</p>
+<pre class="line-numbers language-lean" data-language="lean"><code class="language-lean">#eval String.append &quot;Oh! &quot; (if 1 &gt; 2 then &quot;Yes!&quot; else &quot;No!&quot;)
+--&gt;
+#eval String.append &quot;Oh! &quot; (if false then &quot;Yes!&quot; else &quot;No!&quot;)
+--&gt;
+#eval String.append &quot;Oh! &quot; &quot;No!&quot;
+--&gt; &quot;Oh! No!&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="定义">定义</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">功能</th>
+<th style="text-align:center">例子</th>
+<th style="text-align:center">效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>定义常量</strong></td>
+<td style="text-align:center"><code>def YES := &quot;Yes!&quot;</code></td>
+<td style="text-align:center"><code>#eval String.append &quot;Oh! &quot; YES</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>定义函数（单元）</strong></td>
+<td style="text-align:center"><code>def succ1 (n : Nat) : Nat := n + 1</code></td>
+<td style="text-align:center"><code>#eval succ1 6</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>定义函数（多元）</strong></td>
+<td style="text-align:center"><code>def succk (n : Nat) (k : Nat) : Nat := n + k</code></td>
+<td style="text-align:center"><code>#eval succk 3 6</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>定义类型（类似于 <code>typedef</code> ）</strong></td>
+<td style="text-align:center"><code>def Str : Type := String</code></td>
+<td style="text-align:center"><code>def HELLO : Str := &quot;Hello, World!&quot;</code></td>
+</tr>
+</tbody>
+</table>
+<p>注：<code>Nat</code> 表示自然数，<code>Type</code> 表示“类型的类型”</p>
+<p>不过可能遇到下面这个问题，首先定义：</p>
+<pre class="line-numbers language-lean" data-language="lean"><code class="language-lean">def NaturalNum : Type :&#x3D; Nat<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>那么下面这段代码就会报错：</p>
+<pre class="line-numbers language-lean" data-language="lean"><code class="language-lean">def sixteen : NatrualNum :&#x3D; 16 -- Wrong!<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这是因为 <code>16</code> 被认为是歧义的，我们需要指定右边 <code>16</code> 的类型，即重载（Overload）：</p>
+<pre class="line-numbers language-lean" data-language="lean"><code class="language-lean">def sixteen : NatrualNum :&#x3D; (16 : Nat) -- Right!<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>当然你也可以使用 <code>abbrev</code> 关键字来解决这个问题：</p>
+<pre class="line-numbers language-lean" data-language="lean"><code class="language-lean">abbrev NNNNat : Type :&#x3D; Nat
+def sixteen&#39; : NNNNat :&#x3D; 16<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>而像 <code>abbrev</code> 生成的定义会被标记为可约（Reducible）定义，即可展开的定义，而当我们完全展开所有定义可能会产生十分大的类型（正如第一小节依值类型论所涉及到的），控制这种可约定义对 Lean 的灵活性有着关键作用。</p>
+<h3 id="2-1-2-柯里化">2.1.2 柯里化</h3>
+<h2 id="2-2-lean4-中的自然数">2.2 Lean4 中的自然数</h2>
+<pre class="line-numbers language-lean4" data-language="lean4"><code class="language-lean4">#check Nat                -- Nat : Type
+#check Nat → Nat          -- Nat → Nat : Type
+#check Nat × Nat          -- Nat × Nat : Type
+#check (Nat, Nat)         -- (Nat, Nat) : Type × Type
+#check Nat → Nat → Nat    -- Nat → Nat → Nat : Type
+#check (Nat → Nat) → Nat  -- (Nat → Nat) → Nat : Type
+#check (0, 1)             -- (0, 1) : Nat × Nat
+#check (0, 1).1           -- (0, 1).fst : Nat
+#check (0, 1).2           -- (0, 1).snd : Nat
+#check Nat.succ           -- Nat.succ (n : Nat): Nat
+#check Nat.succ 2         -- Nat.succ 2 : Nat
+#check Nat.pred           -- Nat.pred (n : Nat): Nat
+#check Nat.pred 2         -- Nat.pred 2 : Nat
+#check Nat.add            -- Nat.add : Nat → Nat → Nat
+#check Nat.add 3          -- Nat.add 3 : Nat → Nat
+#check Nat.add 3 4        -- Nat.add 3 4 : Nat<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
           </div>
           
             <div class="dot-line"></div>

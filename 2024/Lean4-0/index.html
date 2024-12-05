@@ -6,7 +6,7 @@
   <link rel="alternate icon" type="image/png" href="/img/favicon.ico">
   <title>
     
-      Lean4 的安装 |
+      Lean4-0 —— Lean4 的安装 |
      
     Sikesibian&#39;s Blog
   </title>
@@ -89,11 +89,12 @@
       <div class="post-details">
           
             <div class="post-title">
-              <h1>Lean4 的安装</h1>
+              <h1>Lean4-0 —— Lean4 的安装</h1>
             </div>
           
           <div class="post-content">
-            <h1>VSCode 中安装 Lean 4</h1>
+            <p><strong>下一篇：<a href="/2024/Lean4-1/">Lean4-1 —— Lean4 的基本使用</a></strong></p>
+<h1>VSCode 中安装 Lean 4</h1>
 <p>VSCode中安装扩展：</p>
 <p><img src="./img/lean4_0/1732761759564.png" alt="1732761759564.png"></p>
 <p>跟随右侧导航走即可：</p>
@@ -181,7 +182,9 @@ lake run &lt;script><span aria-hidden="true" class="line-numbers-rows"><span></s
 <span class="token key property">name</span> <span class="token punctuation">=</span> <span class="token string">"mathlib"</span>
 <span class="token key property">git</span> <span class="token punctuation">=</span> <span class="token string">"https://github.com/leanprover-community/mathlib4.git"</span>
 <span class="token key property">rev</span> <span class="token punctuation">=</span> <span class="token string">"v4.11.0"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>lean-toolchain</code> 内容可以改为：<code>leanprover/lean4:v4.11.0</code> （等价于 <code>curl -L https://raw.githubusercontent.com/leanprover-community/mathlib4/master/lean-toolchain -o lean-toolchain</code>）</p>
+<p><strong>注意把 <code>lean-toolchain</code> 内容改为</strong>：</p>
+<pre class="line-numbers language-none"><code class="language-none">leanprover&#x2F;lean4:v4.11.0<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（等价于 <code>curl -L https://raw.githubusercontent.com/leanprover-community/mathlib4/master/lean-toolchain -o lean-toolchain</code>）</p>
 <blockquote>
 <p>如果你是 <code>leanfile.lean</code>，则在文件中添加：<code>require mathlib from git &quot;https://github.com/leanprover-community/mathlib4&quot;</code> 即可。</p>
 <p>当然你也可以选择在安装项目的时候使用指令：</p>
