@@ -2,12 +2,8 @@
 
 这里假定大家有一定C语言、Python基础。
 
-注释：单行注释：-- 注释，多行注释：/- 多行注释 -/。
-1. Lean4 中的声明、检查与求值
-下面先列出对应的关键字：
-
-声明（Define） def：用于声明一个新的常量
-检查（Check）"><meta name="keywords" content="Lean4"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="mobile-web-app-capable" content="yes"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta id="site_data_static" data-url="/"><meta name="renderer" content="webkit"><link rel="shortcut icon" type="image/x-icon" href="/"><link rel="stylesheet" href="/js_complied/bundle.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><script src="/js_complied/bundle.js"></script><script>Utils.loadCSS("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&family=Noto+Serif+KR:wght@200..900&family=Noto+Serif+SC:wght@200..900&family=Noto+Serif+TC:wght@200..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap");
+注释：单行注释：-- 注释，多行注释：/- 多行注释 -/。下面的代码中会使用注释来标记代码的解释说明或者Lean的返回结果。Lean是很方便的，它往往能实时向我们返回结果。
+1. Lean4 中的声"><meta name="keywords" content="Lean4"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="mobile-web-app-capable" content="yes"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta id="site_data_static" data-url="/"><meta name="renderer" content="webkit"><link rel="shortcut icon" type="image/x-icon" href="/"><link rel="stylesheet" href="/js_complied/bundle.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><script src="/js_complied/bundle.js"></script><script>Utils.loadCSS("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&family=Noto+Serif+KR:wght@200..900&family=Noto+Serif+SC:wght@200..900&family=Noto+Serif+TC:wght@200..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap");
 Utils.loadCSS("https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css");
 Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
@@ -17,7 +13,7 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
 <blockquote>
 <p>这里假定大家有一定C语言、Python基础。</p>
 </blockquote>
-<p>注释：单行注释：<code>-- 注释</code>，多行注释：<code>/- 多行注释 -/</code>。</p>
+<p>注释：单行注释：<code>-- 注释</code>，多行注释：<code>/- 多行注释 -/</code>。下面的代码中<strong>会使用注释来标记代码的解释说明或者Lean的返回结果</strong>。Lean是很方便的，它往往能实时向我们返回结果。</p>
 <h1>1. Lean4 中的声明、检查与求值</h1>
 <p>下面先列出对应的关键字：</p>
 <ul>
@@ -35,7 +31,7 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
 <p><strong>Lean中的任意表达式都有一个类型。</strong> Lean是用于构建复杂表达式的工具，基于 <strong>依值类型论（Dependent Type Theory）</strong> 这一形式语言。</p>
 </blockquote>
 <h2 id="2-0-依值类型论">2.0 依值类型论</h2>
-<p><strong>类型论</strong>是一类基于 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi></mrow><annotation encoding="application/x-tex">\lambda</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault">λ</span></span></span></span> 演算的形式理论的同层，所有数学对象都有各自的类型。而<strong>依值类型论</strong>是一种<strong>类型的定义可以依赖于值（由值所推断）的类型论</strong>，可以写成：</p>
+<p><strong>类型论</strong>是一类基于 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi></mrow><annotation encoding="application/x-tex">\lambda</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault">λ</span></span></span></span> 演算的形式理论的统称，所有数学对象都有各自的类型。而<strong>依值类型论</strong>是一种<strong>类型的定义可以依赖于值（由值所推断）的类型论</strong>，可以写成：</p>
 <p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo>⊢</mo><mi>A</mi><mtext> type</mtext></mrow><annotation encoding="application/x-tex">\Gamma \vdash A\text{ type}
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord">Γ</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">⊢</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">A</span><span class="mord text"><span class="mord"> type</span></span></span></span></span></span></p>
 <p>依值类型论的一些概念并不容易理解，但是我们可以将依值类型论和我们熟知的数理逻辑作如下对应（但不能完全等同）：</p>
@@ -230,7 +226,7 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
 <blockquote>
 <p><strong>若一个点在一个圆上，且这个点也在一条直线上，则该点同时在直线和圆上。</strong></p>
 </blockquote>
-<p>注：其实这里就是一个重言式的例子，不过为了方便，我们给了它这样的一个情境。</p>
+<p><strong>注</strong>：其实这里就是一个重言式的例子，不过为了方便，我们给了它这样的一个情境。</p>
 <h3 id="定理的描述">定理的描述</h3>
 <p>将上述命题在 Lean 中表达出来即：</p>
 <figure class="highlight lean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs lean"><span class="hljs-theorem"><span class="hljs-keyword">theorem</span> <span class="hljs-title">PointOnCircleOnLine</span></span><br><span class="hljs-theorem">    <span class="hljs-params">(c : Shape)</span> <span class="hljs-params">(l : Shape)</span> <span class="hljs-params">(p : Point)</span> <span class="hljs-symbol">:</span></span><br>    PointOnCircle c p → PointOnLine l p →<br>    PointOnCircle c p ∧ PointOnLine l p <span class="hljs-symbol">:=</span> <span class="hljs-sorry">sorry</span><br></code></pre></td></tr></table></figure>
@@ -242,7 +238,7 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
 <figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">PointOnCircleOnLine (c l : Shape) (p : Point) :<br>  PointOnCircle c p → PointOnLine l p → PointOnCircle c p ∧ PointOnLine l p<br></code></pre></td></tr></table></figure>
 <p><strong>传入一个参数 <code>Shape.circle (Point.mk 0.0 0.0) 3.0</code></strong>：</p>
 <figure class="highlight lean"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs lean">#check PointOnCircleOnLine (Shape.circle (Point.mk <span class="hljs-number">0.0</span> <span class="hljs-number">0.0</span>) <span class="hljs-number">3.0</span>)<br></code></pre></td></tr></table></figure>
-<p>注：柯里化。</p>
+<p><strong>注</strong>：柯里化。</p>
 <p><strong>Lean Infoview中反馈到我们</strong>：</p>
 <figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs txt">PointOnCircleOnLine<br>  (Shape.circle &#123; x := 0.0, y := 0.0 &#125;<br>    3.0) : ∀ (l : Shape) (p : Point),<br>  PointOnCircle (Shape.circle &#123; x := 0.0, y := 0.0 &#125; 3.0) p →<br>    PointOnLine l p → PointOnCircle (Shape.circle &#123; x := 0.0, y := 0.0 &#125; 3.0) p ∧ PointOnLine l p<br></code></pre></td></tr></table></figure>
 <h3 id="定理的证明">定理的证明</h3>
@@ -253,8 +249,8 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
 <ul>
 <li><strong><code>λ</code> 关键字</strong>：表示一个 <strong>lambda 表达式/匿名函数</strong>，是Lean中未在顶层定义的函数，可以理解为<strong>就是一个表达式</strong>。Lean中 的 <code>λ</code> 关键字 和 <code>fun</code> 是一致的，虽然你常常看到的是 <code>fun</code>。</li>
 <li><strong><code>hpc</code> 和 <code>hpl</code></strong>：表示 <code>hpc</code> 是 <code>PointOnCircle c p</code> 的一个<strong>实例</strong>，表示对应的命题 <code>PointOnCircle c p</code>，而 <code>hpl</code> 是 <code>PointOnLine l p</code> 的一个<strong>实例</strong>，亦表示了对应的命题 <code>PointOnLine l p</code>。</li>
-<li><strong><code>have</code> 关键字</strong>：用来<strong>引入一个新的局部假设或结论</strong>的关键字。在证明中，可以使用 <code>have</code> 来声明一个中间步骤，然后这个步骤就可以在后面被引用。比如这里的<code>have hp : PointOnCircle c p := hpc</code>，<code>hp</code> 就是一个局部假设，它表示 <code>hpc</code> 的值。</li>
-<li><strong><code>show</code> 关键字</strong>：用来<strong>明确指出证明的目标类型</strong>的关键字。这里 <code>show PointOnCircle c p ∧ PointOnLine l p</code> 就指出证明的目标是展示点同时在圆上和线上。</li>
+<li><strong><code>have</code> 关键字</strong>：用来<strong>引入一个新的局部假设或结论</strong>的关键字。在证明中，可以使用 <code>have</code> 来声明一个中间步骤，然后这个步骤就可以在后面被引用。比如<strong>这里的<code>have hp : PointOnCircle c p := hpc</code>，<code>hp</code> 就是一个局部假设，它表示 <code>hpc</code> 的值</strong>。</li>
+<li><strong><code>show</code> 关键字</strong>：用来<strong>明确指出证明的目标类型</strong>的关键字。<strong>这里 <code>show PointOnCircle c p ∧ PointOnLine l p</code> 就指出证明的目标是展示点同时在圆上和线上</strong>。</li>
 <li><strong><code>from</code> 关键字</strong>：用来<strong>指定证明过程</strong>的关键字。这里 <code>from And.intro hp hl</code> 就使用 <code>And.intro</code> 证明了点同时在圆上和线上。</li>
 <li><strong><code>And.intro</code></strong>：用来<strong>构造一个 <code>PointOnCircle c p ∧ PointOnLine l p</code> 的值</strong>，同时也就证明了我们需要的命题。</li>
 </ul>
