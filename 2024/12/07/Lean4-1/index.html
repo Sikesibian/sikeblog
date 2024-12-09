@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author"><title>Lean4-1 —— Lean4 的基本使用 · Sikesibian's Homepage</title><meta name="description" content="上一篇：Lean4-0 —— Lean4 的安装
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author"><title>Lean4-1 —— Lean4 的基本使用 · Sikesibian's Blog</title><meta name="description" content="上一篇：Lean4-0 —— Lean4 的安装
 
 这里假定大家有一定C语言、Python基础。
 
@@ -383,4 +383,4 @@ deriving Repr <span class="hljs-comment">-- 加上使得我们能够 #eval 它</
     And.<span class="hljs-built_in">intro</span> hp hl                     
     <span class="hljs-comment">-- 证明过程，构造一个 PointOnCircle c p ∧ PointOnLine l p 的值，其与 Intersects c l p 类型一致，也就证明了这个命题</span></code></pre>
 <p><strong>这里我们并不能直接使用 <code>show Intersects c l p</code>，因为 Lean4 的 <code>show</code> 关键字只能显式地指明目标类型，而 <code>Intersects c l p</code> 的类型是隐式地推导出来的，所以需要显示地指明。即 Lean4 会认为这里的 <code>c</code>, <code>l</code> 的类型是 <code>Shape</code>，而非期待的 <code>Shape.circle</code> 和 <code>Shape.line</code>。</strong></p>
-</div><div class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2024-12-07</span>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Lean4/" title="Lean4">Lean4</a>  </span></div></div><p class="pagination"><a href="/2024/12/09/ForUCATFLAGS2024/" title="关于 校内CTF比赛 UCATFLAGS 2024 出的一些题">Previous</a><span>  </span><a href="/2024/11/29/Lean4-0/" title="Lean4-0 —— Lean4 的安装">Next</a></p></div><footer class="footer"><br><p>Comment Allez Vous!</p></footer></body></html>
+</div><div class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2024-12-07</span>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Lean4/" title="Lean4">Lean4</a>  </span></div></div><p class="pagination"><a href="/2024/12/09/ForUCATFLAGS2024/" title="关于 校内CTF比赛 UCATFLAGS 2024 出的一些题">Post Anterior</a><span>  </span><a href="/2024/11/29/Lean4-0/" title="Lean4-0 —— Lean4 的安装">Próximo post</a></p></div><footer class="footer"><br><p>Comment Allez Vous!</p></footer></body></html>
