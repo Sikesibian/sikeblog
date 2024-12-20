@@ -4,6 +4,27 @@
   
     
     <entry>
+      <title>Rust 安装过程中遇到的一些小问题</title>
+      <link href="/2024/12/20/rust-0/"/>
+      <url>/2024/12/20/rust-0/</url>
+      
+        <content type="html"><![CDATA[<ul><li><p><strong>不必先安装 Visual Studio</strong>，可以直接安装 Rust。建议先安装 MinGW64（ucrt），然后选择 <code>rustup-init</code> 的选项 <code>2</code> 自行配置。<a href="https://course.rs/first-try/installation.html"><strong>点击跳转参考1</strong></a>，<a href="https://blog.csdn.net/u011149152/article/details/123518465"><strong>点击跳转参考2</strong></a></p></li><li><p><strong>建议检查一下 gcc 版本，别太低了。。。（与安全选项有关）</strong></p></li><li><p><strong>调整安装路径</strong>。方法：自行配置环境变量 <code>RUSTUP_HOME</code> 和 <code>CARGO_HOME</code> <a href="https://blog.csdn.net/xinyingzai/article/details/135459640"><strong>点击跳转参考</strong></a></p></li><li><p><strong>出现报错 <code>error: linker `link.exe` not found</code></strong>，方法（<a href="https://blog.csdn.net/Libigtong/article/details/131823204"><strong>点击跳转参考</strong></a>）</p><p>依次执行以下命令即可</p><pre><code class="hljs bash">rustup toolchain install stable-x86_64-pc-windows-gnurustup default stable-x86_64-pc-windows-gnu</code></pre></li></ul>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Coding </tag>
+            
+            <tag> Rust </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>关于 校内CTF比赛 UCATFLAGS 2024 出的一些题</title>
       <link href="/2024/12/09/ForUCATFLAGS2024/"/>
       <url>/2024/12/09/ForUCATFLAGS2024/</url>
@@ -39,6 +60,8 @@
             
             <tag> Lean4 </tag>
             
+            <tag> Coding </tag>
+            
         </tags>
       
     </entry>
@@ -57,6 +80,8 @@
         <tags>
             
             <tag> Lean4 </tag>
+            
+            <tag> Coding </tag>
             
         </tags>
       
