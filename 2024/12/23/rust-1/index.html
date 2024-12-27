@@ -8,7 +8,7 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.2"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head><body class="post-page"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&amp;family=Noto+Serif+KR:wght@200..900&amp;family=Noto+Serif+SC:wght@200..900&amp;family=Noto+Serif+TC:wght@200..900&amp;family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"></noscript><nav class="nav"><a href="/">首页</a>&nbsp;&nbsp;<a href="/archives">归档</a>&nbsp;&nbsp;<a href="/tags">标签</a>&nbsp;&nbsp;<a href="/search">搜索</a></nav><div class="main"><div class="post-container post-full"><div class="post-title"><h1>Rust 实现（一个弱智的）大整数计算</h1></div><div class="post-body"><blockquote>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.2"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head><body class="post-page"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&amp;family=Noto+Serif+KR:wght@200..900&amp;family=Noto+Serif+SC:wght@200..900&amp;family=Noto+Serif+TC:wght@200..900&amp;family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"></noscript><nav class="nav"><a href="/">Home</a>&nbsp;&nbsp;<a href="/archives">Archives</a>&nbsp;&nbsp;<a href="/tags">Tags</a>&nbsp;&nbsp;<a href="/search">Search</a></nav><div class="main"><div class="post-container post-full"><div class="post-title"><h1>Rust 实现（一个弱智的）大整数计算</h1></div><div class="post-body"><blockquote>
 <p><strong>后续</strong>：这个代码发现还是有不少问题的，但是博主很懒，所以有空再把调整后的代码放上来吧~</p>
 </blockquote>
 <p><strong>前天</strong>学习了如何使用 rust，想随便写点东西练练手，就想着写一个简单的 Math Repl 吧。这是第一版（对的，还有第零版）的某个数学运算组件，正好没考虑效率地写完了可以进行测试，于是就有了这篇博客。</p>
@@ -16,20 +16,43 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
 <p><strong>背景故事：第零版写着写着就开始在从头写定制的解释器（仅仅到条件语句），写到 <code>AST</code> 就破防了，感觉很笨重而且估计有些问题（虽然设定的一些测试过了），拼尽全力无法战胜（懒惰）于是第一版转战使用 <code>pest</code> ，舒服多了，但是需要先实现一下大整数计算，遂生此博客。</strong></p>
 </blockquote>
 <h2 id="定义bigint结构体">定义BigInt结构体</h2>
-<p>定义一个 <code>BigInt</code> 结构体来表示大整数。这个结构体包含一个 <code>Vec&lt;i64&gt;</code> 类型的字段 <code>digits</code>，用于存储大整数的各个位数。从低位到高位存储浮点存储。</p>
-<pre><code class="hljs rust"><span class="hljs-meta">#[derive(Debug, Clone)]</span>
+<p>定义一个 <code>BigInt</code> 结构体来表示大整数。这个结构体包含一个 <code>Vec&lt;i64&gt;</code> 类型的字段 <code>digits</code>，用于存储大整数的各个位数。从低位到高位动态存储。</p>
+<pre><code class="hljs rust"><span class="hljs-keyword">use</span> std::cmp::Ordering;
+<span class="hljs-keyword">use</span> std::ops::&#123;Add, Sub, Mul, Div, Rem, Neg&#125;;
+
+<span class="hljs-keyword">use</span> fraction::Fraction;
+
+<span class="hljs-keyword">const</span> BASE: <span class="hljs-type">i64</span> = <span class="hljs-number">10</span>;
+
+<span class="hljs-meta">#[derive(Debug, Clone)]</span>
 <span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">BigInt</span> &#123;
     digits: <span class="hljs-type">Vec</span>&lt;<span class="hljs-type">i64</span>&gt;,
+    sign: <span class="hljs-type">bool</span>, <span class="hljs-comment">// false: positive, true: negative</span>
+&#125;
+
+<span class="hljs-keyword">impl</span> <span class="hljs-title class_">BigInt</span> &#123;
+    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">new</span>(<span class="hljs-keyword">mut</span> digits: <span class="hljs-type">Vec</span>&lt;<span class="hljs-type">i64</span>&gt;, sign: <span class="hljs-type">bool</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span> &#123;
+        <span class="hljs-keyword">while</span> digits.<span class="hljs-title function_ invoke__">len</span>() &gt; <span class="hljs-number">1</span> &amp;&amp; digits.<span class="hljs-title function_ invoke__">last</span>() == <span class="hljs-title function_ invoke__">Some</span>(&amp;<span class="hljs-number">0</span>) &#123;
+            digits.<span class="hljs-title function_ invoke__">pop</span>();
+        &#125;
+        BigInt &#123; digits, sign &#125;
+    &#125;
+
+    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">to_string</span>(&amp;<span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">String</span>&#123;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">sign</span> = <span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span>.sign &#123; <span class="hljs-string">&quot;-&quot;</span> &#125; <span class="hljs-keyword">else</span> &#123; <span class="hljs-string">&quot;&quot;</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">digits</span> = <span class="hljs-keyword">self</span>.digits.<span class="hljs-title function_ invoke__">iter</span>().<span class="hljs-title function_ invoke__">rev</span>().<span class="hljs-title function_ invoke__">map</span>(|&amp;x| x.<span class="hljs-title function_ invoke__">to_string</span>()).collect::&lt;<span class="hljs-type">Vec</span>&lt;_&gt;&gt;().<span class="hljs-title function_ invoke__">join</span>(<span class="hljs-string">&quot;&quot;</span>);
+        <span class="hljs-built_in">format!</span>(<span class="hljs-string">&quot;&#123;&#125;&#123;&#125;&quot;</span>, sign, digits)
+    &#125;
 &#125;</code></pre>
 <h2 id="实现基本运算">实现基本运算</h2>
 <h3 id="比较运算-partialeq-eq-partialord-和-ord-比较大整数">比较运算，<code>PartialEq</code>、<code>Eq</code>、<code>PartialOrd</code> 和 <code>Ord</code> 比较大整数。</h3>
-<pre><code class="hljs rust"><span class="hljs-comment">// ...existing code...</span>
-<span class="hljs-keyword">impl</span> <span class="hljs-title class_">PartialEq</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">BigInt</span> &#123;
+<pre><code class="hljs rust"><span class="hljs-keyword">impl</span> <span class="hljs-title class_">PartialEq</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">BigInt</span> &#123;
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">eq</span>(&amp;<span class="hljs-keyword">self</span>, other: &amp;<span class="hljs-keyword">Self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">bool</span> &#123;
-        <span class="hljs-keyword">self</span>.digits == other.digits
+        (<span class="hljs-keyword">self</span>.digits == other.digits &amp;&amp; <span class="hljs-keyword">self</span>.sign == other.sign) ||
+        (<span class="hljs-keyword">self</span>.<span class="hljs-title function_ invoke__">is_zero</span>() &amp;&amp; other.<span class="hljs-title function_ invoke__">is_zero</span>())
     &#125;
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">ne</span>(&amp;<span class="hljs-keyword">self</span>, other: &amp;<span class="hljs-keyword">Self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">bool</span> &#123;
-        <span class="hljs-keyword">self</span>.digits != other.digits
+        !<span class="hljs-keyword">self</span>.<span class="hljs-title function_ invoke__">eq</span>(other)
     &#125;
 &#125;
 
@@ -37,12 +60,21 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
 
 <span class="hljs-keyword">impl</span> <span class="hljs-title class_">PartialOrd</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">BigInt</span> &#123;
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">partial_cmp</span>(&amp;<span class="hljs-keyword">self</span>, other: &amp;<span class="hljs-keyword">Self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Option</span>&lt;Ordering&gt; &#123;
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span>.sign != other.sign &#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-title function_ invoke__">Some</span>(<span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span>.sign &#123; Ordering::Less &#125; <span class="hljs-keyword">else</span> &#123; Ordering::Greater &#125;);
+        &#125;
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span>.digits.<span class="hljs-title function_ invoke__">len</span>() != other.digits.<span class="hljs-title function_ invoke__">len</span>() &#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-title function_ invoke__">Some</span>(<span class="hljs-keyword">self</span>.digits.<span class="hljs-title function_ invoke__">len</span>().<span class="hljs-title function_ invoke__">cmp</span>(&amp;other.digits.<span class="hljs-title function_ invoke__">len</span>()));
+        &#125;
         <span class="hljs-title function_ invoke__">Some</span>(<span class="hljs-keyword">self</span>.<span class="hljs-title function_ invoke__">cmp</span>(other))
     &#125;
 &#125;
 
 <span class="hljs-keyword">impl</span> <span class="hljs-title class_">Ord</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">BigInt</span> &#123;
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">cmp</span>(&amp;<span class="hljs-keyword">self</span>, other: &amp;<span class="hljs-keyword">Self</span>) <span class="hljs-punctuation">-&gt;</span> Ordering &#123;
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span>.sign != other.sign &#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span>.sign &#123; Ordering::Less &#125; <span class="hljs-keyword">else</span> &#123; Ordering::Greater &#125;;
+        &#125;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">len_cmp</span> = <span class="hljs-keyword">self</span>.digits.<span class="hljs-title function_ invoke__">len</span>().<span class="hljs-title function_ invoke__">cmp</span>(&amp;other.digits.<span class="hljs-title function_ invoke__">len</span>());
         <span class="hljs-keyword">if</span> len_cmp != Ordering::Equal &#123;
             <span class="hljs-keyword">return</span> len_cmp;
@@ -56,32 +88,26 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
         Ordering::Equal
     &#125;
 &#125;</code></pre>
-<h3 id="从i64类型转换为bigint">从i64类型转换为<code>BigInt</code>。</h3>
-<pre><code class="hljs rust"><span class="hljs-keyword">impl</span> <span class="hljs-title class_">From</span>&lt;<span class="hljs-type">i64</span>&gt; <span class="hljs-keyword">for</span> <span class="hljs-title class_">BigInt</span> &#123;
-    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">from</span>(value: <span class="hljs-type">i64</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span> &#123;
+<h3 id="从string类型转换为bigint">从<code>String</code>类型转换为<code>BigInt</code>。</h3>
+<pre><code class="hljs rust"><span class="hljs-keyword">impl</span> <span class="hljs-title class_">From</span>&lt;<span class="hljs-type">String</span>&gt; <span class="hljs-keyword">for</span> <span class="hljs-title class_">BigInt</span> &#123;
+    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">from</span>(<span class="hljs-keyword">mut</span> s: <span class="hljs-type">String</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span> &#123;
         <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">digits</span> = <span class="hljs-type">Vec</span>::<span class="hljs-title function_ invoke__">new</span>();
-        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">n</span> = value;
-
-        <span class="hljs-keyword">while</span> n != <span class="hljs-number">0</span> &#123;
-            digits.<span class="hljs-title function_ invoke__">push</span>(n % BASE);
-            n /= BASE;
+        <span class="hljs-comment">// remove zero</span>
+        <span class="hljs-keyword">while</span> s.<span class="hljs-title function_ invoke__">starts_with</span>(<span class="hljs-string">&#x27;0&#x27;</span>) &amp;&amp; s.<span class="hljs-title function_ invoke__">len</span>() &gt; <span class="hljs-number">1</span> &#123;
+            s.<span class="hljs-title function_ invoke__">remove</span>(<span class="hljs-number">0</span>);
         &#125;
-
+        <span class="hljs-keyword">for</span> <span class="hljs-variable">c</span> <span class="hljs-keyword">in</span> s.<span class="hljs-title function_ invoke__">chars</span>() &#123;
+            digits.<span class="hljs-title function_ invoke__">push</span>(c.<span class="hljs-title function_ invoke__">to_digit</span>(<span class="hljs-number">10</span>).<span class="hljs-title function_ invoke__">unwrap</span>() <span class="hljs-keyword">as</span> <span class="hljs-type">i64</span>);
+        &#125;
         digits.<span class="hljs-title function_ invoke__">reverse</span>();
-
-        BigInt &#123; digits &#125;
+        BigInt &#123; digits, sign: <span class="hljs-literal">false</span> &#125;
     &#125;
 &#125;</code></pre>
 <h3 id="相反数运算">相反数运算</h3>
 <pre><code class="hljs rust"><span class="hljs-keyword">impl</span> <span class="hljs-title class_">Neg</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">BigInt</span> &#123;
     <span class="hljs-keyword">type</span> <span class="hljs-title class_">Output</span> = <span class="hljs-keyword">Self</span>;
-
-    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">neg</span>(<span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span>::Output &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">result</span> = <span class="hljs-keyword">self</span>.<span class="hljs-title function_ invoke__">clone</span>();
-        <span class="hljs-keyword">for</span> <span class="hljs-variable">digit</span> <span class="hljs-keyword">in</span> result.digits.<span class="hljs-title function_ invoke__">iter_mut</span>() &#123;
-            *digit = -*digit;
-        &#125;
-        result
+    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">neg</span>(<span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span> &#123;
+        BigInt &#123; digits: <span class="hljs-keyword">self</span>.digits, sign: !<span class="hljs-keyword">self</span>.sign &#125;
     &#125;
 &#125;</code></pre>
 <h3 id="加法运算">加法运算</h3>
@@ -89,6 +115,12 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
     <span class="hljs-keyword">type</span> <span class="hljs-title class_">Output</span> = <span class="hljs-keyword">Self</span>;
 
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">add</span>(<span class="hljs-keyword">self</span>, other: <span class="hljs-keyword">Self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span> &#123;
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span>.sign != other.sign &#123;
+            <span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span>.digits == other.digits &#123;
+                <span class="hljs-keyword">return</span> BigInt::<span class="hljs-title function_ invoke__">zero</span>();
+            &#125;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">self</span> - (-other);
+        &#125;
         <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">result</span> = <span class="hljs-type">Vec</span>::<span class="hljs-title function_ invoke__">new</span>();
         <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">carry</span> = <span class="hljs-number">0</span>;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">max_len</span> = <span class="hljs-keyword">self</span>.digits.<span class="hljs-title function_ invoke__">len</span>().<span class="hljs-title function_ invoke__">max</span>(other.digits.<span class="hljs-title function_ invoke__">len</span>());
@@ -105,7 +137,11 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
             result.<span class="hljs-title function_ invoke__">push</span>(carry);
         &#125;
 
-        BigInt &#123; digits: result &#125;
+        <span class="hljs-keyword">while</span> result.<span class="hljs-title function_ invoke__">len</span>() &gt; <span class="hljs-number">1</span> &amp;&amp; result.<span class="hljs-title function_ invoke__">last</span>() == <span class="hljs-title function_ invoke__">Some</span>(&amp;<span class="hljs-number">0</span>) &#123;
+            result.<span class="hljs-title function_ invoke__">pop</span>();
+        &#125;
+
+        BigInt &#123; digits: result , sign: <span class="hljs-keyword">self</span>.sign &#125;
     &#125;
 &#125;</code></pre>
 <h3 id="减法运算">减法运算</h3>
@@ -113,13 +149,25 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
     <span class="hljs-keyword">type</span> <span class="hljs-title class_">Output</span> = <span class="hljs-keyword">Self</span>;
 
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">sub</span>(<span class="hljs-keyword">self</span>, other: <span class="hljs-keyword">Self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span> &#123;
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span>.sign == other.sign &amp;&amp; <span class="hljs-keyword">self</span>.digits == other.digits &#123;
+            <span class="hljs-keyword">return</span> BigInt::<span class="hljs-title function_ invoke__">zero</span>();
+        &#125;
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span>.sign != other.sign &#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">self</span> + (-other);
+        &#125;
         <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">result</span> = <span class="hljs-type">Vec</span>::<span class="hljs-title function_ invoke__">new</span>();
         <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">borrow</span> = <span class="hljs-number">0</span>;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">max_len</span> = <span class="hljs-keyword">self</span>.digits.<span class="hljs-title function_ invoke__">len</span>().<span class="hljs-title function_ invoke__">max</span>(other.digits.<span class="hljs-title function_ invoke__">len</span>());
+        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">sign</span> = <span class="hljs-keyword">self</span>.sign;
+        <span class="hljs-keyword">let</span> (larger, smaller) = <span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span> &gt;= other &#123;
+            (<span class="hljs-keyword">self</span>, other)
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            sign = !<span class="hljs-keyword">self</span>.sign;
+            (other, <span class="hljs-keyword">self</span>)
+        &#125;;
 
-        <span class="hljs-keyword">for</span> <span class="hljs-variable">i</span> <span class="hljs-keyword">in</span> <span class="hljs-number">0</span>..max_len &#123;
-            <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = *<span class="hljs-keyword">self</span>.digits.<span class="hljs-title function_ invoke__">get</span>(i).<span class="hljs-title function_ invoke__">unwrap_or</span>(&amp;<span class="hljs-number">0</span>);
-            <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = *other.digits.<span class="hljs-title function_ invoke__">get</span>(i).<span class="hljs-title function_ invoke__">unwrap_or</span>(&amp;<span class="hljs-number">0</span>);
+        <span class="hljs-keyword">for</span> <span class="hljs-variable">i</span> <span class="hljs-keyword">in</span> <span class="hljs-number">0</span>..larger.digits.<span class="hljs-title function_ invoke__">len</span>() &#123;
+            <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = *larger.digits.<span class="hljs-title function_ invoke__">get</span>(i).<span class="hljs-title function_ invoke__">unwrap_or</span>(&amp;<span class="hljs-number">0</span>);
+            <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = *smaller.digits.<span class="hljs-title function_ invoke__">get</span>(i).<span class="hljs-title function_ invoke__">unwrap_or</span>(&amp;<span class="hljs-number">0</span>);
             <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">diff</span> = a - b - borrow;
             <span class="hljs-keyword">if</span> diff &lt; <span class="hljs-number">0</span> &#123;
                 diff += BASE;
@@ -134,7 +182,7 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
             result.<span class="hljs-title function_ invoke__">pop</span>();
         &#125;
 
-        BigInt &#123; digits: result &#125;
+        BigInt &#123; digits: result, sign &#125;
     &#125;
 &#125;</code></pre>
 <h3 id="乘法运算">乘法运算</h3>
@@ -147,9 +195,9 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
         <span class="hljs-title function_ invoke__">for</span> (i, &amp;a) <span class="hljs-keyword">in</span> <span class="hljs-keyword">self</span>.digits.<span class="hljs-title function_ invoke__">iter</span>().<span class="hljs-title function_ invoke__">enumerate</span>() &#123;
             <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">carry</span> = <span class="hljs-number">0</span>;
             <span class="hljs-title function_ invoke__">for</span> (j, &amp;b) <span class="hljs-keyword">in</span> other.digits.<span class="hljs-title function_ invoke__">iter</span>().<span class="hljs-title function_ invoke__">enumerate</span>() &#123;
-                <span class="hljs-keyword">let</span> <span class="hljs-variable">sum</span> = result[i + j] + a * b + carry;
-                result[i + j] = sum % BASE;
-                carry = sum / BASE;
+            <span class="hljs-keyword">let</span> <span class="hljs-variable">sum</span> = result[i + j] + a * b + carry;
+            result[i + j] = sum % BASE;
+            carry = sum / BASE;
             &#125;
             result[i + other.digits.<span class="hljs-title function_ invoke__">len</span>()] += carry;
         &#125;
@@ -158,7 +206,7 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
             result.<span class="hljs-title function_ invoke__">pop</span>();
         &#125;
 
-        BigInt &#123; digits: result &#125;
+        BigInt &#123; digits: result, sign: <span class="hljs-keyword">self</span>.sign ^ other.sign &#125;
     &#125;
 &#125;</code></pre>
 <h3 id="除法运算">除法运算</h3>
@@ -167,16 +215,15 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
 
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">div</span>(<span class="hljs-keyword">self</span>, other: <span class="hljs-keyword">Self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span> &#123;
         <span class="hljs-keyword">if</span> other.digits.<span class="hljs-title function_ invoke__">is_empty</span>() || other.<span class="hljs-title function_ invoke__">is_zero</span>() &#123;
-            <span class="hljs-built_in">panic!</span>(<span class="hljs-string">&quot;Division by zero&quot;</span>);
+            eprintln!(<span class="hljs-string">&quot;Warning: Division by zero&quot;</span>);
+            <span class="hljs-keyword">return</span> BigInt::<span class="hljs-title function_ invoke__">zero</span>();
         &#125;
-
-        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">remainder</span> = <span class="hljs-keyword">self</span>;
-        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">quotient</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[] &#125;;
-        <span class="hljs-keyword">if</span> remainder &lt; other &#123;
-            <span class="hljs-keyword">return</span> BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">remainder</span> = <span class="hljs-keyword">self</span>.<span class="hljs-title function_ invoke__">clone</span>().<span class="hljs-title function_ invoke__">abs</span>();
+        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">quotient</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[], sign: <span class="hljs-keyword">self</span>.sign ^ other.sign &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">divisor</span> = other.<span class="hljs-title function_ invoke__">abs</span>();
+        <span class="hljs-keyword">if</span> remainder &lt; divisor &#123;
+            <span class="hljs-keyword">return</span> BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>], sign: <span class="hljs-keyword">self</span>.sign &#125;;
         &#125;
-
-        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">divisor</span> = other;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">divisor_len</span> = divisor.digits.<span class="hljs-title function_ invoke__">len</span>();
         <span class="hljs-keyword">while</span> divisor.digits.<span class="hljs-title function_ invoke__">len</span>() &lt; remainder.digits.<span class="hljs-title function_ invoke__">len</span>() &#123;
             divisor.digits.<span class="hljs-title function_ invoke__">insert</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
@@ -189,6 +236,10 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
             &#125;
             quotient.digits.<span class="hljs-title function_ invoke__">insert</span>(<span class="hljs-number">0</span>, quotient_digit);
             divisor.digits.<span class="hljs-title function_ invoke__">remove</span>(<span class="hljs-number">0</span>);
+        &#125;
+        
+        <span class="hljs-keyword">while</span> quotient.digits.<span class="hljs-title function_ invoke__">len</span>() &gt; <span class="hljs-number">1</span> &amp;&amp; quotient.digits.<span class="hljs-title function_ invoke__">last</span>() == <span class="hljs-title function_ invoke__">Some</span>(&amp;<span class="hljs-number">0</span>) &#123;
+            quotient.digits.<span class="hljs-title function_ invoke__">pop</span>();
         &#125;
 
         quotient
@@ -200,44 +251,66 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
 
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">rem</span>(<span class="hljs-keyword">self</span>, other: <span class="hljs-keyword">Self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span> &#123;
         <span class="hljs-keyword">if</span> other.digits.<span class="hljs-title function_ invoke__">is_empty</span>() || other.<span class="hljs-title function_ invoke__">is_zero</span>() &#123;
-            <span class="hljs-built_in">panic!</span>(<span class="hljs-string">&quot;Division by zero&quot;</span>);
+            eprintln!(<span class="hljs-string">&quot;Warning: Division by zero&quot;</span>);
+            <span class="hljs-keyword">return</span> BigInt::<span class="hljs-title function_ invoke__">zero</span>();
         &#125;
-
-        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">remainder</span> = <span class="hljs-keyword">self</span>;
-        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">quotient</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[] &#125;;
-        <span class="hljs-keyword">if</span> remainder &lt; other &#123;
+        <span class="hljs-keyword">if</span> other.sign &#123;
+            eprintln!(<span class="hljs-string">&quot;Warning: The moduli cannot be negative!&quot;</span>);
+            <span class="hljs-keyword">return</span> BigInt::<span class="hljs-title function_ invoke__">zero</span>();
+        &#125;
+        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">remainder</span> = <span class="hljs-keyword">self</span>.<span class="hljs-title function_ invoke__">clone</span>().<span class="hljs-title function_ invoke__">abs</span>();
+        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">divisor</span> = other.<span class="hljs-title function_ invoke__">clone</span>().<span class="hljs-title function_ invoke__">abs</span>();
+        <span class="hljs-keyword">if</span> remainder &lt; divisor &#123;
+            <span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span>.sign &amp;&amp; !remainder.<span class="hljs-title function_ invoke__">is_zero</span>() &#123;
+                remainder = other.<span class="hljs-title function_ invoke__">abs</span>() - remainder;
+            &#125;
             <span class="hljs-keyword">return</span> remainder;
         &#125;
-
-        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">divisor</span> = other;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">divisor_len</span> = divisor.digits.<span class="hljs-title function_ invoke__">len</span>();
         <span class="hljs-keyword">while</span> divisor.digits.<span class="hljs-title function_ invoke__">len</span>() &lt; remainder.digits.<span class="hljs-title function_ invoke__">len</span>() &#123;
             divisor.digits.<span class="hljs-title function_ invoke__">insert</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
         &#125;
         <span class="hljs-keyword">while</span> divisor.digits.<span class="hljs-title function_ invoke__">len</span>() &gt;= divisor_len &#123;
-            <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">quotient_digit</span> = <span class="hljs-number">0</span>;
             <span class="hljs-keyword">while</span> remainder &gt;= divisor &#123;
                 remainder = remainder - divisor.<span class="hljs-title function_ invoke__">clone</span>();
-                quotient_digit += <span class="hljs-number">1</span>;
             &#125;
-            quotient.digits.<span class="hljs-title function_ invoke__">insert</span>(<span class="hljs-number">0</span>, quotient_digit);
             divisor.digits.<span class="hljs-title function_ invoke__">remove</span>(<span class="hljs-number">0</span>);
         &#125;
 
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span>.sign &amp;&amp; !remainder.<span class="hljs-title function_ invoke__">is_zero</span>() &#123;
+            remainder = other.<span class="hljs-title function_ invoke__">abs</span>() - remainder;
+        &#125;
         remainder
     &#125;
 &#125;</code></pre>
 <h2 id="其他">其他</h2>
-<p>还为<code>BigInt</code>实现了一些其他有用的方法，例如<strong>幂运算、模幂运算、判断是否为零、判断是否为一、判断是否为负数、计算最大公约数（方便约分）和取绝对值</strong>。</p>
+<p>还为<code>BigInt</code>实现了一些其他有用的方法，例如<strong>幂运算、模幂运算、判断是否为零、判断是否为一、判断是否为负数、计算最大公约数（方便约分）、取绝对值和阶乘等等</strong>。</p>
 <pre><code class="hljs rust"><span class="hljs-keyword">impl</span> <span class="hljs-title class_">BigInt</span> &#123;
+    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">zero</span>() <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span> &#123;
+        BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>], sign: <span class="hljs-literal">false</span> &#125;
+    &#125;
+    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">one</span>() <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span> &#123;
+        BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>], sign: <span class="hljs-literal">false</span> &#125;
+    &#125;
+&#125;
+
+<span class="hljs-keyword">impl</span> <span class="hljs-title class_">BigInt</span> &#123;
+    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">fraction</span>(<span class="hljs-keyword">self</span>, other: <span class="hljs-keyword">Self</span>) <span class="hljs-punctuation">-&gt;</span> Fraction &#123;
+        <span class="hljs-keyword">if</span> other.digits.<span class="hljs-title function_ invoke__">is_empty</span>() || other.<span class="hljs-title function_ invoke__">is_zero</span>() &#123;
+            eprintln!(<span class="hljs-string">&quot;Warning: Division by zero&quot;</span>);
+            <span class="hljs-keyword">return</span> Fraction::<span class="hljs-title function_ invoke__">zero</span>();
+        &#125;
+        <span class="hljs-keyword">return</span> Fraction::<span class="hljs-title function_ invoke__">new</span>(<span class="hljs-keyword">self</span>, other);
+    &#125;
+
     <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">pow</span>(<span class="hljs-keyword">self</span>, exp: <span class="hljs-type">u32</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span> &#123;
         <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">base</span> = <span class="hljs-keyword">self</span>;
         <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">exp</span> = exp;
-        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">result</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">result</span> = BigInt::<span class="hljs-title function_ invoke__">one</span>();
 
         <span class="hljs-keyword">while</span> exp &gt; <span class="hljs-number">0</span> &#123;
             <span class="hljs-keyword">if</span> exp % <span class="hljs-number">2</span> == <span class="hljs-number">1</span> &#123;
-                result = result * base.<span class="hljs-title function_ invoke__">clone</span>();
+            result = result * base.<span class="hljs-title function_ invoke__">clone</span>();
             &#125;
             base = base.<span class="hljs-title function_ invoke__">clone</span>() * base;
             exp /= <span class="hljs-number">2</span>;
@@ -252,7 +325,7 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
         &#125;
         <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">base</span> = <span class="hljs-keyword">self</span> % modulus.<span class="hljs-title function_ invoke__">clone</span>();
         <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">exp</span> = exp;
-        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">result</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>] &#125; % modulus.<span class="hljs-title function_ invoke__">clone</span>();
+        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">result</span> = BigInt::<span class="hljs-title function_ invoke__">one</span>() % modulus.<span class="hljs-title function_ invoke__">clone</span>();
         <span class="hljs-keyword">while</span> exp &gt; <span class="hljs-number">0</span> &#123;
             <span class="hljs-keyword">if</span> exp % <span class="hljs-number">2</span> == <span class="hljs-number">1</span> &#123;
                 result = (result * base.<span class="hljs-title function_ invoke__">clone</span>()) % modulus.<span class="hljs-title function_ invoke__">clone</span>();
@@ -277,8 +350,8 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
     &#125;
 
     <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">gcd</span>(&amp;<span class="hljs-keyword">self</span>, other: &amp;<span class="hljs-keyword">Self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span> &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">a</span> = <span class="hljs-keyword">self</span>.<span class="hljs-title function_ invoke__">clone</span>();
-        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">b</span> = other.<span class="hljs-title function_ invoke__">clone</span>();
+        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">a</span> = <span class="hljs-keyword">self</span>.<span class="hljs-title function_ invoke__">clone</span>().<span class="hljs-title function_ invoke__">abs</span>();
+        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">b</span> = other.<span class="hljs-title function_ invoke__">clone</span>().<span class="hljs-title function_ invoke__">abs</span>();
 
         <span class="hljs-keyword">while</span> !b.<span class="hljs-title function_ invoke__">is_zero</span>() &#123;
             <span class="hljs-keyword">let</span> <span class="hljs-variable">temp</span> = b.<span class="hljs-title function_ invoke__">clone</span>();
@@ -289,12 +362,23 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
         a
     &#125;
 
-    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">abs</span>(<span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span> &#123;
-        <span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span>.<span class="hljs-title function_ invoke__">clone</span>().<span class="hljs-title function_ invoke__">is_negative</span>() &#123;
-            -<span class="hljs-keyword">self</span>
-        &#125; <span class="hljs-keyword">else</span> &#123;
-            <span class="hljs-keyword">self</span>
+    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">abs</span>(<span class="hljs-keyword">mut</span> <span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span> &#123;
+        <span class="hljs-keyword">self</span>.sign = <span class="hljs-literal">false</span>;
+        <span class="hljs-keyword">self</span>
+    &#125;
+
+    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">factorial</span>(<span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span> &#123;
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">self</span>.<span class="hljs-title function_ invoke__">is_negative</span>() &#123;
+            eprintln!(<span class="hljs-string">&quot;Warning: Factorial of a negative number is undefined&quot;</span>);
+            <span class="hljs-keyword">return</span> BigInt::<span class="hljs-title function_ invoke__">zero</span>();
         &#125;
+        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">result</span> = BigInt::<span class="hljs-title function_ invoke__">one</span>();
+        <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">i</span> = BigInt::<span class="hljs-title function_ invoke__">one</span>();
+        <span class="hljs-keyword">while</span> i &lt;= <span class="hljs-keyword">self</span>.<span class="hljs-title function_ invoke__">clone</span>() &#123;
+            result = result * i.<span class="hljs-title function_ invoke__">clone</span>();
+            i = i + BigInt::<span class="hljs-title function_ invoke__">one</span>();
+        &#125;
+        result
     &#125;
 &#125;</code></pre>
 <h2 id="测试">测试</h2>
@@ -305,139 +389,253 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
 
     <span class="hljs-meta">#[test]</span>
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_creation</span>() &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">bigint</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">bigint</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-built_in">assert_eq!</span>(bigint.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]);
     &#125;
 
     <span class="hljs-meta">#[test]</span>
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_comparison</span>() &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] &#125;;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-built_in">assert_eq!</span>(a, b);
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">c</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">c</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-built_in">assert_ne!</span>(a, c);
         <span class="hljs-built_in">assert!</span>(a &lt; c);
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">d</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">9</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">d</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">9</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-built_in">assert!</span>(a &gt; d);
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">e</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">true</span> &#125;;
+        <span class="hljs-built_in">assert!</span>(e &lt; a);
     &#125;
 
     <span class="hljs-meta">#[test]</span>
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_negation</span>() &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = -a;
-        <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[-<span class="hljs-number">1</span>, -<span class="hljs-number">2</span>, -<span class="hljs-number">3</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">true</span>);
     &#125;
 
     <span class="hljs-meta">#[test]</span>
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_addition</span>() &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">6</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] &#125;;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">6</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a + b;
         <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">false</span>);
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">d</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">c</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">true</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = d + c;
+        <span class="hljs-built_in">assert_eq!</span>(result, BigInt::<span class="hljs-title function_ invoke__">zero</span>());
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">e</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">true</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">f</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = e + f;
+        <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">true</span>);
     &#125;
 
     <span class="hljs-meta">#[test]</span>
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_subtraction</span>() &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">9</span>] &#125;;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">9</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a - b;
         <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">5</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">false</span>);
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">9</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a - b;
+        <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">5</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">true</span>);
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">true</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a - b;
+        <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">true</span>);
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a - b;
+        <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>, <span class="hljs-number">1</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">true</span>);
     &#125;
 
     <span class="hljs-meta">#[test]</span>
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_multiplication</span>() &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] &#125;;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a * b;
         <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">4</span>, <span class="hljs-number">3</span>, <span class="hljs-number">9</span>, <span class="hljs-number">9</span>, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">false</span>);
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">true</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a * b;
+        <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">4</span>, <span class="hljs-number">3</span>, <span class="hljs-number">9</span>, <span class="hljs-number">9</span>, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">true</span>);
     &#125;
 
     <span class="hljs-meta">#[test]</span>
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_division</span>() &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] &#125;;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">3</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a / b;
         <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">7</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">false</span>);
 
-        <span class="hljs-comment">// let a = BigInt &#123; digits: vec![1, 2, 3] &#125;;</span>
-        <span class="hljs-comment">// let b = BigInt &#123; digits: vec![0] &#125;;</span>
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">true</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">4</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a / b;
+        <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>, <span class="hljs-number">8</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">true</span>);
+
+        <span class="hljs-comment">// let a = BigInt &#123; digits: vec![1, 2, 3], sign: false &#125;;</span>
+        <span class="hljs-comment">// let b = BigInt &#123; digits: vec![0], sign: false &#125;;</span>
         <span class="hljs-comment">// let result = a / b;</span>
         <span class="hljs-comment">// println!(&quot;&#123;:?&#125;&quot;, result);</span>
     &#125;
 
     <span class="hljs-meta">#[test]</span>
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_remainder</span>() &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] &#125;;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a % b;
         <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">6</span>]);
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">c</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>] &#125;;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">c</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = c % a;
         <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>]);
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">d</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">true</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">e</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = d % e;
+        <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>]);
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">d</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>], sign: <span class="hljs-literal">true</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">e</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = d % e;
+        <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">false</span>);
     &#125;
 
     <span class="hljs-meta">#[test]</span>
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_pow</span>() &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">2</span>, <span class="hljs-number">2</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">2</span>, <span class="hljs-number">2</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a.<span class="hljs-title function_ invoke__">pow</span>(<span class="hljs-number">3</span>);
         <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">8</span>, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">false</span>);
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">2</span>, <span class="hljs-number">2</span>], sign: <span class="hljs-literal">true</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a.<span class="hljs-title function_ invoke__">pow</span>(<span class="hljs-number">3</span>);
+        <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">8</span>, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">true</span>);
     &#125;
 
     <span class="hljs-meta">#[test]</span>
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_mod_pow</span>() &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">2</span>, <span class="hljs-number">1</span>] &#125;;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">9</span>, <span class="hljs-number">9</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">2</span>, <span class="hljs-number">1</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">9</span>, <span class="hljs-number">9</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a.<span class="hljs-title function_ invoke__">mod_pow</span>(<span class="hljs-number">3</span>, b);
         <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">5</span>, <span class="hljs-number">4</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">false</span>);
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">2</span>, <span class="hljs-number">1</span>], sign: <span class="hljs-literal">true</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">9</span>, <span class="hljs-number">9</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a.<span class="hljs-title function_ invoke__">mod_pow</span>(<span class="hljs-number">3</span>, b);
+        <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">4</span>, <span class="hljs-number">5</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">false</span>);
     &#125;
 
     <span class="hljs-meta">#[test]</span>
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_is_zero</span>() &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-built_in">assert!</span>(a.<span class="hljs-title function_ invoke__">is_zero</span>());
 
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-built_in">assert!</span>(!b.<span class="hljs-title function_ invoke__">is_zero</span>());
     &#125;
 
     <span class="hljs-meta">#[test]</span>
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_is_one</span>() &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-built_in">assert!</span>(a.<span class="hljs-title function_ invoke__">is_one</span>());
 
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-built_in">assert!</span>(!b.<span class="hljs-title function_ invoke__">is_one</span>());
     &#125;
 
     <span class="hljs-meta">#[test]</span>
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_is_negative</span>() &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[-<span class="hljs-number">1</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[-<span class="hljs-number">1</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-built_in">assert!</span>(a.<span class="hljs-title function_ invoke__">is_negative</span>());
 
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-built_in">assert!</span>(!b.<span class="hljs-title function_ invoke__">is_negative</span>());
     &#125;
 
     <span class="hljs-meta">#[test]</span>
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_gcd</span>() &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">2</span>, <span class="hljs-number">2</span>] &#125;;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">3</span>, <span class="hljs-number">3</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">2</span>, <span class="hljs-number">2</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">3</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a.<span class="hljs-title function_ invoke__">gcd</span>(&amp;b);
         <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">false</span>);
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">3</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">true</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">2</span>, <span class="hljs-number">2</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a.<span class="hljs-title function_ invoke__">gcd</span>(&amp;b);
+        <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">false</span>);
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">3</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">true</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">3</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a.<span class="hljs-title function_ invoke__">gcd</span>(&amp;b);
+        <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">3</span>, <span class="hljs-number">3</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">false</span>);
     &#125;
 
     <span class="hljs-meta">#[test]</span>
     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_abs</span>() &#123;
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a.<span class="hljs-title function_ invoke__">abs</span>();
         <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">false</span>);
 
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[-<span class="hljs-number">1</span>, -<span class="hljs-number">2</span>, -<span class="hljs-number">3</span>] &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">true</span> &#125;;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = b.<span class="hljs-title function_ invoke__">abs</span>();
         <span class="hljs-built_in">assert_eq!</span>(result.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]);
+        <span class="hljs-built_in">assert_eq!</span>(result.sign, <span class="hljs-literal">false</span>);
+    &#125;
+
+    <span class="hljs-meta">#[test]</span>
+    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_comparison_with_zero</span>() &#123;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-built_in">assert!</span>(a &gt; b);
+    &#125;
+
+    <span class="hljs-meta">#[test]</span>
+    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_comparison_with_negative_zero</span>() &#123;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[-<span class="hljs-number">0</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-built_in">assert!</span>(a == b);
+    &#125;
+
+    <span class="hljs-meta">#[test]</span>
+    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_from_str</span>() &#123;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt::<span class="hljs-title function_ invoke__">from</span>(<span class="hljs-string">&quot;123&quot;</span>.<span class="hljs-title function_ invoke__">to_string</span>());
+        <span class="hljs-built_in">assert_eq!</span>(a.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">3</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>]);
+
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = BigInt::<span class="hljs-title function_ invoke__">from</span>(<span class="hljs-string">&quot;00123&quot;</span>.<span class="hljs-title function_ invoke__">to_string</span>());
+        <span class="hljs-built_in">assert_eq!</span>(b.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">3</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>]);
+
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">c</span> = BigInt::<span class="hljs-title function_ invoke__">from</span>(<span class="hljs-string">&quot;0&quot;</span>.<span class="hljs-title function_ invoke__">to_string</span>());
+        <span class="hljs-built_in">assert_eq!</span>(c.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>]);
+
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">d</span> = BigInt::<span class="hljs-title function_ invoke__">from</span>(<span class="hljs-string">&quot;0000&quot;</span>.<span class="hljs-title function_ invoke__">to_string</span>());
+        <span class="hljs-built_in">assert_eq!</span>(d.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>]);
+
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">e</span> = BigInt::<span class="hljs-title function_ invoke__">from</span>(<span class="hljs-string">&quot;9876543210&quot;</span>.<span class="hljs-title function_ invoke__">to_string</span>());
+        <span class="hljs-built_in">assert_eq!</span>(e.digits, <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>]);
+    &#125;
+
+    <span class="hljs-meta">#[test]</span>
+    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">test_factorial</span>() &#123;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = BigInt &#123; digits: <span class="hljs-built_in">vec!</span>[<span class="hljs-number">0</span>, <span class="hljs-number">1</span>], sign: <span class="hljs-literal">false</span> &#125;;
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">result</span> = a.<span class="hljs-title function_ invoke__">factorial</span>();
+        <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;&#123;&#125;&quot;</span>, result.<span class="hljs-title function_ invoke__">to_string</span>());
     &#125;
 &#125;</code></pre>
 <p>测试结果：</p>
 <p><img src="/img/rust-1/1734896451810.png" alt="1734896451810"></p>
-</div><div class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2024-12-23</span>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Coding/" title="Coding">Coding</a>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Rust/" title="Rust">Rust</a>  </span></div></div><p class="pagination"><a href="/2024/12/24/rust-2/" title="手搓的简易基于 rust 的自己设计数学语言的解释器，很爽！">上一篇</a><span>  </span><a href="/2024/12/20/rust-0/" title="Rust 安装过程中遇到的一些小问题">下一篇</a></p></div><footer class="footer"><br><p>Comment Allez Vous!</p></footer></body></html>
+</div><div class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2024-12-23</span>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Coding/" title="Coding">Coding</a>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Rust/" title="Rust">Rust</a>  </span></div></div><p class="pagination"><a href="/2024/12/24/rust-2/" title="手搓的简易基于 rust 的自己设计数学语言的解释器，很爽！">Previous</a><span>  </span><a href="/2024/12/20/rust-0/" title="Rust 安装过程中遇到的一些小问题">Next</a></p></div><footer class="footer"><br><p>Comment Allez Vous!</p></footer></body></html>
