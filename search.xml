@@ -4,6 +4,27 @@
   
     
     <entry>
+      <title>关于代数学习一些很酷的网站</title>
+      <link href="/2025/01/07/Algebra-0/"/>
+      <url>/2025/01/07/Algebra-0/</url>
+      
+        <content type="html"><![CDATA[<p>查资料：<strong>Math StackOverflow (MSE)</strong> 话不多说</p><p><strong>群论的神</strong>：<a href="https://people.maths.bris.ac.uk/~matyd/GroupNames/index.html"><strong>Finite groups</strong></a></p><ul><li>特征标表：<a href="https://people.maths.bris.ac.uk/~matyd/GroupNames/characters.html"><strong>Character tables</strong></a></li><li>线性群：<a href="https://people.maths.bris.ac.uk/~matyd/GroupNames/linear.html"><strong>Linear and projective linear groups</strong></a></li><li>多项式的Galois群：<a href="https://people.maths.bris.ac.uk/~matyd/GroupNames/T31.html"><strong>Transitive groups of degree up to 31</strong></a></li></ul><pre><code class="hljs python"><span class="hljs-comment"># sagemath</span>K.&lt;a&gt; = NumberField(POLYNOMIAL)G = K.galois_group()<span class="hljs-built_in">print</span>(G)</code></pre>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Algebra </tag>
+            
+            <tag> Math </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>手搓的简易基于 rust 的自己设计数学语言的解释器，很爽！</title>
       <link href="/2024/12/24/rust-2/"/>
       <url>/2024/12/24/rust-2/</url>
@@ -143,6 +164,8 @@
         <tags>
             
             <tag> NumberTheory </tag>
+            
+            <tag> Math </tag>
             
         </tags>
       
