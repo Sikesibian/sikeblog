@@ -6,7 +6,7 @@
   <link href="https://sikesibian.github.io/atom.xml" rel="self"/>
   
   <link href="https://sikesibian.github.io/"/>
-  <updated>2025-01-06T16:48:36.532Z</updated>
+  <updated>2025-01-06T16:50:45.789Z</updated>
   <id>https://sikesibian.github.io/</id>
   
   <author>
@@ -21,14 +21,14 @@
     <link href="https://sikesibian.github.io/2025/01/07/Algebra-0/"/>
     <id>https://sikesibian.github.io/2025/01/07/Algebra-0/</id>
     <published>2025-01-06T16:37:11.000Z</published>
-    <updated>2025-01-06T16:48:36.532Z</updated>
+    <updated>2025-01-06T16:50:45.789Z</updated>
     
-    <content type="html"><![CDATA[<p>查资料：<strong>Math StackOverflow (MSE)</strong> 话不多说</p><p><strong>群论的神</strong>：<a href="https://people.maths.bris.ac.uk/~matyd/GroupNames/index.html"><strong>Finite groups</strong></a></p><ul><li>特征标表：<a href="https://people.maths.bris.ac.uk/~matyd/GroupNames/characters.html"><strong>Character tables</strong></a></li><li>线性群：<a href="https://people.maths.bris.ac.uk/~matyd/GroupNames/linear.html"><strong>Linear and projective linear groups</strong></a></li><li>多项式的Galois群：<a href="https://people.maths.bris.ac.uk/~matyd/GroupNames/T31.html"><strong>Transitive groups of degree up to 31</strong></a></li></ul><pre><code class="hljs python"><span class="hljs-comment"># sagemath</span>K.&lt;a&gt; = NumberField(POLYNOMIAL)G = K.galois_group()<span class="hljs-built_in">print</span>(G)</code></pre>]]></content>
+    <content type="html"><![CDATA[<p>查资料：<strong>Math StackExchange (MSE)</strong> 话不多说</p><p><strong>群论的神</strong>：<a href="https://people.maths.bris.ac.uk/~matyd/GroupNames/index.html"><strong>Finite groups</strong></a></p><ul><li>特征标表：<a href="https://people.maths.bris.ac.uk/~matyd/GroupNames/characters.html"><strong>Character tables</strong></a></li><li>线性群：<a href="https://people.maths.bris.ac.uk/~matyd/GroupNames/linear.html"><strong>Linear and projective linear groups</strong></a></li><li>多项式的Galois群：<a href="https://people.maths.bris.ac.uk/~matyd/GroupNames/T31.html"><strong>Transitive groups of degree up to 31</strong></a></li></ul><pre><code class="hljs python"><span class="hljs-comment"># sagemath</span>K.&lt;a&gt; = NumberField(POLYNOMIAL)G = K.galois_group()<span class="hljs-built_in">print</span>(G)</code></pre>]]></content>
     
     
       
       
-    <summary type="html">&lt;p&gt;查资料：&lt;strong&gt;Math StackOverflow (MSE)&lt;/strong&gt; 话不多说&lt;/p&gt;
+    <summary type="html">&lt;p&gt;查资料：&lt;strong&gt;Math StackExchange (MSE)&lt;/strong&gt; 话不多说&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;群论的神&lt;/strong&gt;：&lt;a href=&quot;https://people.maths.bris.ac.uk/~matyd/GroupName</summary>
       
     
