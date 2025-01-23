@@ -6,7 +6,7 @@
   <link href="https://sikesibian.github.io/atom.xml" rel="self"/>
   
   <link href="https://sikesibian.github.io/"/>
-  <updated>2025-01-21T17:51:31.098Z</updated>
+  <updated>2025-01-23T13:26:42.953Z</updated>
   <id>https://sikesibian.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>welcome_2025</title>
+    <link href="https://sikesibian.github.io/2025/01/23/welcome-2025/"/>
+    <id>https://sikesibian.github.io/2025/01/23/welcome-2025/</id>
+    <published>2025-01-23T12:43:35.000Z</published>
+    <updated>2025-01-23T13:26:42.953Z</updated>
+    
+    <content type="html"><![CDATA[<p>2025年1月22日清晨回乡的路上，打开软件，听到的第一首歌就是王菲的新歌。朴素轻柔的旋律入耳，倒是没反应过来是新的曲子。路上有些嘈杂，便调高了一些音量。</p><p>词曲直白，充满着烟火气，笔者很受感触（虽然网络上褒贬不一）。</p><style>    .custom-audio {        display: flex;        align-items: center;        justify-content: center;        width: 160px;        height: 40px;        background-color: #f0f8ff;        border-radius: 0;        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);        padding: 5px;    }    .custom-audio button {        background-color: #87cefa;        border: none;        border-radius: 15%;        width: 30px;        height: 30px;        cursor: pointer;        outline: none;    }    .custom-audio button:hover {        background-color: #add8e6;    }    .custom-audio audio {        display: none;     }</style><div class="custom-audio">    <audio id="myAudio" src="./audio/ShiJieZengYuWoDe.mp3" preload="none"></audio>    <button onclick="togglePlay()">&#9658;</button><p>&nbsp;世界赠予我的-王菲</p></div><script>    function togglePlay() {        const audio = document.getElementById("myAudio");        const button = document.querySelector(".custom-audio button");        if (audio.paused) {            audio.play();            button.innerHTML = "&#10074;&#10074;";        } else {            audio.pause();            button.innerHTML = "&#9658;";        }    }    togglePlay();</script>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;2025年1月22日清晨回乡的路上，打开软件，听到的第一首歌就是王菲的新歌。朴素轻柔的旋律入耳，倒是没反应过来是新的曲子。路上有些嘈杂，便调高了一些音量。&lt;/p&gt;
+&lt;p&gt;词曲直白，充满着烟火气，笔者很受感触（虽然网络上褒贬不一）。&lt;/p&gt;
+&lt;style&gt;
+    .cust</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>计算复杂性作业笔记</title>
