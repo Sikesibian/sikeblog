@@ -4,11 +4,30 @@
   
     
     <entry>
+      <title>记《沂蒙山小调》</title>
+      <link href="/2025/01/24/yimengshan/"/>
+      <url>/2025/01/24/yimengshan/</url>
+      
+        <content type="html"><![CDATA[<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=302524918&bvid=BV1oP411G7Do&cid=818017393&p=1" width="600px" height="400px" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe><p>初识《沂蒙山小调》是在小学，当时还在校管乐团中。第一次是在音乐课本上看到的，但老师并没有向我们介绍这首民歌；之后是在五年级的一次音乐会上，是一个单簧管独奏。当时不知道沂蒙山在山东，也不知道什么是民歌，只记得当时很喜欢它的前奏，也只记得第一句“<strong>人人都说沂蒙好</strong>”。</p><p>今年正好是小学毕业后的第十年，又偶然在视频平台上看到了这首民歌。在惊喜与感触之中倒是有不少遗憾，或许是时隔这么多年才知道沂蒙山坐落山东。倒是欣喜于自己与山东这么早就结下缘分。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 随笔 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>记于乙巳春节前第六天</title>
       <link href="/2025/01/23/welcome-2025/"/>
       <url>/2025/01/23/welcome-2025/</url>
       
-        <content type="html"><![CDATA[<p>2025年1月22日清晨回乡的路上，打开软件，听到的第一首歌就是王菲的新歌。朴素轻柔的旋律入耳，倒是没反应过来是新的曲子。路上有些嘈杂，便调高了一些音量。</p><p>词曲直白，充满着烟火气，笔者很受感触（虽然网络上褒贬不一）。</p><style>    .custom-audio {        display: flex;        align-items: center;        justify-content: center;        width: 160px;        height: 40px;        background-color: #f0f8ff;        border-radius: 0;        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);        padding: 5px;    }    .custom-audio button {        background-color: #87cefa;        border: none;        border-radius: 15%;        width: 30px;        height: 30px;        cursor: pointer;        outline: none;    }    .custom-audio button:hover {        background-color: #add8e6;    }    .custom-audio audio {        display: none;     }</style><div class="custom-audio">    <audio id="myAudio" src="/audio/ShiJieZengYuWoDe.mp3" autoplay="autoplay" preload="auto" loop="loop"></audio>    <button onclick="togglePlay()">&#9658;</button><p>&nbsp;世界赠予我的-王菲</p></div><script>    function togglePlay() {        const audio = document.getElementById("myAudio");        const button = document.querySelector(".custom-audio button");        if (audio.paused) {            audio.play();            button.innerHTML = "&#10074;&#10074;";        } else {            audio.pause();            button.innerHTML = "&#9658;";        }    }</script>]]></content>
+        <content type="html"><![CDATA[<p>2025年1月22日清晨回乡的路上，打开软件，听到的第一首歌就是王菲的新歌。朴素轻柔的旋律入耳，倒是没反应过来是新的曲子。路上有些嘈杂，便调高了一些音量。</p><p>词曲直白，充满着烟火气，笔者很受感触（虽然网络上褒贬不一）。</p><style>    .custom-audio {        display: flex;        align-items: center;        justify-content: center;        width: 160px;        height: 40px;        background-color: #f0f8ff;        border-radius: 0;        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);        padding: 5px;    }    .custom-audio button {        background-color: #87cefa;        border: none;        border-radius: 15%;        width: 30px;        height: 30px;        cursor: pointer;        outline: none;    }    .custom-audio button:hover {        background-color: #add8e6;    }    .custom-audio audio {        display: none;     }</style><div class="custom-audio">    <audio id="myAudio" src="/audio/ShiJieZengYuWoDe.mp3" autoplay="autoplay" preload="auto" loop="loop"></audio>    <button onclick="togglePlay()">&#10074;&#10074;</button><p>&nbsp;世界赠予我的-王菲</p></div><script>    function togglePlay() {        const audio = document.getElementById("myAudio");        const button = document.querySelector(".custom-audio button");        if (audio.paused) {            audio.play();            button.innerHTML = "&#10074;&#10074;";        } else {            audio.pause();            button.innerHTML = "&#9658;";        }    }</script>]]></content>
       
       
       
@@ -64,8 +83,8 @@
     
     <entry>
       <title>一次深夜随笔</title>
-      <link href="/2025/01/02/amidnight/"/>
-      <url>/2025/01/02/amidnight/</url>
+      <link href="/2025/01/02/amidnight-1/"/>
+      <url>/2025/01/02/amidnight-1/</url>
       
         <content type="html"><![CDATA[<blockquote><p>本预找回高中时的一份数学笔记，反而促使我开始回忆那段长达6年的中学时光，深夜有感，零零碎碎拼凑得此篇。</p></blockquote><p>我的语文不是很好，我并不擅长预习。小学老师说有时候他喜欢写一些人生随笔，而我看着作文本上的“题记”二字不知道如何预习人生。</p><p>我的语文不是很好，老师们常常这么说。我总是理不清拐弯抹角的题干，分不清“意义”与“作用”，不知道原来“文中的人物”不包括作者与读者。文字的组合玄幻莫测实难预料，我没有LLM的慧根，也没有状元文笔，答对答错全凭运气。</p><p>我的语文不是很好，脑筋死板，表达不知变通。或许上大学之后熬夜太多，时而分不清语境，也常常词不达意，不懂双关奥妙，也难吐名言警句。</p><p>我的语文不是很好，但语文伴随着人在社会中的一生。一个人的语文记录生活，两个人的语文是促膝长谈或把酒言欢……但我常常记忆碎片星罗棋布，洋洋洒洒大笔一挥只懂得胡乱拼凑语句。</p><p>我的语文不是很好，深夜有感，而得此篇；深夜无感，那就睡觉！</p>]]></content>
       
