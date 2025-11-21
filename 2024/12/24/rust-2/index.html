@@ -16,14 +16,14 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.2"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head><body class="post-page"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&amp;family=Noto+Serif+KR:wght@200..900&amp;family=Noto+Serif+SC:wght@200..900&amp;family=Noto+Serif+TC:wght@200..900&amp;family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"></noscript><nav class="nav"><a href="/">Accueil</a>&nbsp;&nbsp;<a href="/archives">Archives</a>&nbsp;&nbsp;<a href="/tags">Tags</a>&nbsp;&nbsp;<a href="/search">Search</a></nav><div class="main"><div class="post-container post-full"><div class="post-title"><h1>手搓的简易基于 rust 的自己设计数学语言的解释器，很爽！</h1></div><div class="post-body"><blockquote>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head><body class="post-page"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&amp;family=Noto+Serif+KR:wght@200..900&amp;family=Noto+Serif+SC:wght@200..900&amp;family=Noto+Serif+TC:wght@200..900&amp;family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"></noscript><nav class="nav"><a href="/">首页</a>&nbsp;&nbsp;<a href="/archives">归档</a>&nbsp;&nbsp;<a href="/tags">标签</a>&nbsp;&nbsp;<a href="/search">搜索</a></nav><div class="main"><div class="post-container post-full"><div class="post-title"><h1>手搓的简易基于 rust 的自己设计数学语言的解释器，很爽！</h1></div><div class="post-body"><blockquote>
 <p><strong>关于人在不想干正事的时候能干出啥来。。。</strong></p>
 </blockquote>
 <h1>第一次记录：2024年12月24日丑时</h1>
 <p><img src="/img/rust-2/1734977873447.png" alt="1734977873447"></p>
 <p>有不少 Bug，稳定性可能不是很好，但是很爽！（比如优先级问题）</p>
 <p><strong>项目结构如下！</strong></p>
-<pre><code class="hljs plaintext">MrMath
+<pre><code>MrMath
 ├─ ...
 ├─ Cargo.lock
 ├─ Cargo.toml
@@ -49,63 +49,65 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end 
    │  └─ service.rs
    ├─ hello.rs
    └─ main.rs
+
 </code></pre>
 <p>其中 token.pest 文件如下：</p>
-<pre><code class="hljs rust">WHITE_SPACE = _&#123; <span class="hljs-string">&quot; &quot;</span> | <span class="hljs-string">&quot;\t&quot;</span> | <span class="hljs-string">&quot;\r&quot;</span> &#125;
-GRAMMAR = &#123; SOI ~ TRANS_UNIT ~ EOI &#125;
-NEWLINE = _&#123; <span class="hljs-string">&quot;\n&quot;</span> &#125;
+<pre><code class="language-rust">WHITE_SPACE = _{ &quot; &quot; | &quot;\t&quot; | &quot;\r&quot; }
+GRAMMAR = { SOI ~ TRANS_UNIT ~ EOI }
+NEWLINE = _{ &quot;\n&quot; }
 
-TRANS_UNIT = &#123; BLOCK &#125;
-<span class="hljs-comment">// BLOCK = &#123; (STMT ~ NEWLINE) + &#125;</span>
-BLOCK = &#123; STMT* &#125;
-STMT = &#123; VAR_STMT | EXPR_STMT | PRINT_STMT &#125;
+TRANS_UNIT = { BLOCK }
+// BLOCK = { (STMT ~ NEWLINE) + }
+BLOCK = { STMT* }
+STMT = { VAR_STMT | EXPR_STMT | PRINT_STMT }
 
-VAR_STMT = &#123; VAR ~ WHITE_SPACE* ~ ID ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;=&quot;</span> ~ WHITE_SPACE* ~ TYPE ~ WHITE_SPACE* ~ EXPR ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;;&quot;</span> &#125;
-<span class="hljs-comment">// EXPR_STMT = &#123; EXPR ~ WHITE_SPACE* ~ &quot;;&quot; &#125;</span>
-EXPR_STMT = &#123; EXPR ~ WHITE_SPACE* &#125;
-PRINT_STMT = &#123; <span class="hljs-string">&quot;print&quot;</span> ~ WHITE_SPACE* ~ EXPR ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;;&quot;</span> &#125;
+VAR_STMT = { VAR ~ WHITE_SPACE* ~ ID ~ WHITE_SPACE* ~ &quot;=&quot; ~ WHITE_SPACE* ~ TYPE ~ WHITE_SPACE* ~ EXPR ~ WHITE_SPACE* ~ &quot;;&quot; }
+// EXPR_STMT = { EXPR ~ WHITE_SPACE* ~ &quot;;&quot; }
+EXPR_STMT = { EXPR ~ WHITE_SPACE* }
+PRINT_STMT = { &quot;print&quot; ~ WHITE_SPACE* ~ EXPR ~ WHITE_SPACE* ~ &quot;;&quot; }
 
-ID = &#123; ASCII_ALPHA ~ ASCII_ALPHA_NUM* &#125;
-ASCII_ALPHA_NUM = &#123; ASCII_ALPHA | ASCII_DIGIT &#125;
-EXPR = &#123; ATOM_EXPR ~ (INFIX_OPS ~ ATOM_EXPR)*  &#125;
-PREFIX_OPS = &#123; (WHITE_SPACE* ~ PREFIX_OP)* ~ WHITE_SPACE* &#125;
-POSTFIX_OPS = &#123; (WHITE_SPACE* ~ POSTFIX_OP)* &#125;
-INFIX_OPS = &#123; WHITE_SPACE* ~ INFIX_OP ~ WHITE_SPACE*&#125;
-ATOM_EXPR = &#123; PREFIX_OPS ~ PRIMARY_EXPR ~ POSTFIX_OPS &#125;
-PRIMARY_EXPR = &#123; INTEGER | FRACTION | VECTOR | MATRIX | <span class="hljs-string">&quot;(&quot;</span> ~ WHITE_SPACE* ~ EXPR ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;)&quot;</span> &#125;
-EXPR_SHORT = &#123; ATOM_EXPR_SHORT ~ (INFIX_OPS ~ ATOM_EXPR_SHORT)*  &#125;
-ATOM_EXPR_SHORT = &#123; PREFIX_OPS ~ PRIMARY_EXPR ~ POSTFIX_OPS &#125;
-PRIMARY_EXPR_SHORT = &#123; INTEGER | FRACTION &#125;
+ID = { ASCII_ALPHA ~ ASCII_ALPHA_NUM* }
+ASCII_ALPHA_NUM = { ASCII_ALPHA | ASCII_DIGIT }
+EXPR = { ATOM_EXPR ~ (INFIX_OPS ~ ATOM_EXPR)*  }
+PREFIX_OPS = { (WHITE_SPACE* ~ PREFIX_OP)* ~ WHITE_SPACE* }
+POSTFIX_OPS = { (WHITE_SPACE* ~ POSTFIX_OP)* }
+INFIX_OPS = { WHITE_SPACE* ~ INFIX_OP ~ WHITE_SPACE*}
+ATOM_EXPR = { PREFIX_OPS ~ PRIMARY_EXPR ~ POSTFIX_OPS }
+PRIMARY_EXPR = { INTEGER | FRACTION | VECTOR | MATRIX | &quot;(&quot; ~ WHITE_SPACE* ~ EXPR ~ WHITE_SPACE* ~ &quot;)&quot; }
+EXPR_SHORT = { ATOM_EXPR_SHORT ~ (INFIX_OPS ~ ATOM_EXPR_SHORT)*  }
+ATOM_EXPR_SHORT = { PREFIX_OPS ~ PRIMARY_EXPR ~ POSTFIX_OPS }
+PRIMARY_EXPR_SHORT = { INTEGER | FRACTION }
 
-TYPE = &#123; INT_TYPE | FRAC_TYPE | VECTOR_TYPE | MATRIX_TYPE &#125;
-INT_TYPE = &#123; <span class="hljs-string">&quot;Int&quot;</span> &#125;
-FRAC_TYPE = &#123; <span class="hljs-string">&quot;Frac&quot;</span> &#125;
-MATRIX_TYPE = &#123; <span class="hljs-string">&quot;Mat&quot;</span> | <span class="hljs-string">&quot;Matrix&quot;</span> &#125;
-VECTOR_TYPE = &#123; <span class="hljs-string">&quot;Vec&quot;</span> | <span class="hljs-string">&quot;Vector&quot;</span> &#125;
+TYPE = { INT_TYPE | FRAC_TYPE | VECTOR_TYPE | MATRIX_TYPE }
+INT_TYPE = { &quot;Int&quot; }
+FRAC_TYPE = { &quot;Frac&quot; }
+MATRIX_TYPE = { &quot;Mat&quot; | &quot;Matrix&quot; }
+VECTOR_TYPE = { &quot;Vec&quot; | &quot;Vector&quot; }
 
-PREFIX_OP = &#123; <span class="hljs-string">&quot;abs&quot;</span> | <span class="hljs-string">&quot;+&quot;</span> | <span class="hljs-string">&quot;-&quot;</span> &#125;
-POSTFIX_OP = &#123; <span class="hljs-string">&quot;!&quot;</span> | <span class="hljs-string">&quot;^T&quot;</span> &#125;
-INFIX_OP = &#123; MOD_OP | MUL_OP | ADD_OP &#125;
-MOD_OP = &#123; <span class="hljs-string">&quot;%&quot;</span> | <span class="hljs-string">&quot;**&quot;</span> &#125;
-MUL_OP = &#123; <span class="hljs-string">&quot;*&quot;</span> | <span class="hljs-string">&quot;//&quot;</span> &#125;
-ADD_OP = &#123; <span class="hljs-string">&quot;+&quot;</span> | <span class="hljs-string">&quot;-&quot;</span> &#125;
+PREFIX_OP = { &quot;abs&quot; | &quot;+&quot; | &quot;-&quot; }
+POSTFIX_OP = { &quot;!&quot; | &quot;^T&quot; }
+INFIX_OP = { MOD_OP | MUL_OP | ADD_OP }
+MOD_OP = { &quot;%&quot; | &quot;**&quot; }
+MUL_OP = { &quot;*&quot; | &quot;//&quot; }
+ADD_OP = { &quot;+&quot; | &quot;-&quot; }
 
-INTEGER = &#123; ASCII_DIGIT+ &#125;
-<span class="hljs-comment">// FRACTION = &#123; &quot;Frac&quot; ~ &quot;[&quot; ~ WHITE_SPACE* ~ EXPR_SHORT ~ WHITE_SPACE* ~ &quot;,&quot; ~ WHITE_SPACE* ~ EXPR_SHORT ~ WHITE_SPACE* ~ &quot;]&quot; &#125;</span>
-FRACTION = &#123; <span class="hljs-string">&quot;Frac&quot;</span> ~ <span class="hljs-string">&quot;[&quot;</span> ~ WHITE_SPACE* ~ INTEGER ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;,&quot;</span> ~ WHITE_SPACE* ~ INTEGER ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;]&quot;</span> &#125;
-MATRIX = &#123; <span class="hljs-string">&quot;Mat&quot;</span> ~ <span class="hljs-string">&quot;[&quot;</span> ~ WHITE_SPACE* ~ MATRIX_ROWS ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;]&quot;</span> &#125;
-MATRIX_ROWS = &#123; VECTOR_ROW ~ (WHITE_SPACE* ~ <span class="hljs-string">&quot;,&quot;</span> ~ WHITE_SPACE* ~ VECTOR_ROW)* &#125;
-VECTOR = &#123; <span class="hljs-string">&quot;Vec&quot;</span> ~ VECTOR_ROW &#125;
-<span class="hljs-comment">// VECTOR_ROW = &#123; &quot;[&quot; ~ WHITE_SPACE* ~ EXPR_SHORT ~ (WHITE_SPACE* ~ &quot;,&quot; ~ WHITE_SPACE* ~ EXPR_SHORT)* ~ WHITE_SPACE* ~ &quot;]&quot; &#125;</span>
-VECTOR_ROW = &#123; <span class="hljs-string">&quot;[&quot;</span> ~ WHITE_SPACE* ~ INTEGER ~ (WHITE_SPACE* ~ <span class="hljs-string">&quot;,&quot;</span> ~ WHITE_SPACE* ~ INTEGER)* ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;]&quot;</span> &#125;
+INTEGER = { ASCII_DIGIT+ }
+// FRACTION = { &quot;Frac&quot; ~ &quot;[&quot; ~ WHITE_SPACE* ~ EXPR_SHORT ~ WHITE_SPACE* ~ &quot;,&quot; ~ WHITE_SPACE* ~ EXPR_SHORT ~ WHITE_SPACE* ~ &quot;]&quot; }
+FRACTION = { &quot;Frac&quot; ~ &quot;[&quot; ~ WHITE_SPACE* ~ INTEGER ~ WHITE_SPACE* ~ &quot;,&quot; ~ WHITE_SPACE* ~ INTEGER ~ WHITE_SPACE* ~ &quot;]&quot; }
+MATRIX = { &quot;Mat&quot; ~ &quot;[&quot; ~ WHITE_SPACE* ~ MATRIX_ROWS ~ WHITE_SPACE* ~ &quot;]&quot; }
+MATRIX_ROWS = { VECTOR_ROW ~ (WHITE_SPACE* ~ &quot;,&quot; ~ WHITE_SPACE* ~ VECTOR_ROW)* }
+VECTOR = { &quot;Vec&quot; ~ VECTOR_ROW }
+// VECTOR_ROW = { &quot;[&quot; ~ WHITE_SPACE* ~ EXPR_SHORT ~ (WHITE_SPACE* ~ &quot;,&quot; ~ WHITE_SPACE* ~ EXPR_SHORT)* ~ WHITE_SPACE* ~ &quot;]&quot; }
+VECTOR_ROW = { &quot;[&quot; ~ WHITE_SPACE* ~ INTEGER ~ (WHITE_SPACE* ~ &quot;,&quot; ~ WHITE_SPACE* ~ INTEGER)* ~ WHITE_SPACE* ~ &quot;]&quot; }
 
-VAR = &#123; <span class="hljs-string">&quot;var&quot;</span> &#125;</code></pre>
+VAR = { &quot;var&quot; }
+</code></pre>
 <p>设计还很不完善，但是已经可以运行了，不枉三天功夫。</p>
 <p>乐，明天早上还要交 <strong>代数</strong> 作业，，，</p>
 <h1>第二次记录：2024年12月28日子时</h1>
 <p><strong>A Math Calculator implementation in Rust.</strong><br>
 MrMath = My Rust Math Calculator</p>
-<pre><code class="hljs plaintext">MrMath
+<pre><code>MrMath
 ├─ Cargo.lock
 ├─ Cargo.toml
 └─ src
@@ -143,6 +145,7 @@ MrMath = My Rust Math Calculator</p>
    │  └─ service.rs
    ├─ hello.rs
    └─ main.rs
+
 </code></pre>
 <p>添加了不少功能，实现了<strong>变量</strong>和<strong>常量</strong>，定义更加灵活，支持<strong>整数、分数、向量和矩阵的运算</strong>，分数、向量和矩阵的定义中可以包含部分复杂的表达式。</p>
 <p><img src="/img/rust-2/1735320570968.png" alt="1735320570968"></p>
@@ -150,4 +153,4 @@ MrMath = My Rust Math Calculator</p>
 <blockquote>
 <p><strong>估计后面会有一长段时间不碰这个了。</strong></p>
 </blockquote>
-</div><div class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2024-12-24</span>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Coding/" title="Coding">Coding</a>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Rust/" title="Rust">Rust</a>  </span></div></div><p class="pagination"><a href="/2025/01/02/amidnight-1/" title="一次深夜随笔">Article précédent</a><span>  </span><a href="/2024/12/23/rust-1/" title="Rust 实现（一个弱智的）大整数计算">Article suivant</a></p></div><footer class="footer"><br><p>Comment Allez Vous!</p></footer></body></html>
+</div><div class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2024-12-24</span>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Coding/" title="Coding">Coding</a>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Rust/" title="Rust">Rust</a>  </span></div></div><p class="pagination"><a href="/2025/01/02/amidnight-1/" title="一次深夜随笔">上一篇</a><span>  </span><a href="/2024/12/23/rust-1/" title="Rust 实现（一个弱智的）大整数计算">下一篇</a></p></div><footer class="footer"><br><p>Comment Allez Vous!</p></footer></body></html>
