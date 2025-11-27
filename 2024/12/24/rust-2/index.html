@@ -1,156 +1,51 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author"><title>手搓的简易基于 rust 的自己设计数学语言的解释器，很爽！ · Sikesibian's Blog</title><meta name="description" content="关于人在不想干正事的时候能干出啥来。。。
+<!DOCTYPE html><html lang="zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="Sike"><title>手搓的简易基于 rust 的自己设计数学语言的解释器，很爽！ · Sikesibian's Blog</title><meta name="description" content="关于人在不想干正事的时候能干出啥来。。。
 
 第一次记录：2024年12月24日丑时
 
 有不少 Bug，稳定性可能不是很好，但是很爽！（比如优先级问题）
 项目结构如下！
-MrMath
-├─ ...
-├─ Cargo.lock
-├─ Cargo.toml
-└─ src
-   ├─ backend
-   "><meta name="keywords" content="Coding,Rust"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="mobile-web-app-capable" content="yes"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta id="site_data_static" data-url="/"><meta name="renderer" content="webkit"><link rel="shortcut icon" type="image/x-icon" href="/"><link rel="stylesheet" href="/js_complied/bundle.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><script src="/js_complied/bundle.js"></script><script>Utils.loadCSS("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&family=Noto+Serif+KR:wght@200..900&family=Noto+Serif+SC:wght@200..900&family=Noto+Serif+TC:wght@200..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap");
+MrMath├─ ...├─ Cargo.lock├─ Cargo.toml└─ src   ├─ backend   │  ├─ "><meta name="keywords" content="Coding,Rust"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="mobile-web-app-capable" content="yes"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta id="site_data_static" data-url="/"><meta name="renderer" content="webkit"><link rel="shortcut icon" type="image/x-icon" href="/images/logo.png"><link rel="stylesheet" href="/js_complied/bundle.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><style>:root { --normal-font-face: 'Noto Serif', 'Noto Serif SC', 'Noto Serif TC', 'Noto Serif JP', 'Noto Serif KR', 'Times New Roman', Times, serif; }</style><script src="/js_complied/bundle.js"></script><script>Utils.loadCSS("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&family=Noto+Serif+KR:wght@200..900&family=Noto+Serif+SC:wght@200..900&family=Noto+Serif+TC:wght@200..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap");
 Utils.loadCSS("https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css");
-Utils.loadCSS("/css/font-awesome.min.css");</script><!-- hexo injector head_end start -->
+Utils.loadCSS("https://cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.css");
+Utils.loadCSS("/css/font-awesome.min.css");</script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.js" integrity="sha512-EKW5YvKU3hpyyOcN6jQnAxO/L8gts+YdYV6Yymtl8pk9YlYFtqJgihORuRoBXK8/cOIlappdU6Ms8KdK6yBCgA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><script src="https://cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.js"></script><!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head><body class="post-page"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&amp;family=Noto+Serif+KR:wght@200..900&amp;family=Noto+Serif+SC:wght@200..900&amp;family=Noto+Serif+TC:wght@200..900&amp;family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"></noscript><nav class="nav"><a href="/">Home</a>&nbsp;&nbsp;<a href="/archives">Archives</a>&nbsp;&nbsp;<a href="/tags">Tags</a>&nbsp;&nbsp;<a href="/search">Search</a></nav><div class="main"><div class="post-container post-full"><div class="post-title"><h1>手搓的简易基于 rust 的自己设计数学语言的解释器，很爽！</h1></div><div class="post-body"><blockquote>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head><body class="post-page"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&amp;family=Noto+Serif+KR:wght@200..900&amp;family=Noto+Serif+SC:wght@200..900&amp;family=Noto+Serif+TC:wght@200..900&amp;family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"></noscript><nav class="nav"><a href="/">首页</a>&nbsp;&nbsp;<a href="/archives">归档</a>&nbsp;&nbsp;<a href="/tags">标签</a>&nbsp;&nbsp;<a href="/about">关于</a>&nbsp;&nbsp;<a href="/search">搜索</a>&nbsp;&nbsp;<a href="javascript:SoSimple.darkLightToggle()">Dark/Light Mode</a></nav><main class="main"><article class="post-container post-full"><header class="post-title"><h1>手搓的简易基于 rust 的自己设计数学语言的解释器，很爽！</h1></header><section class="post-body"><blockquote>
 <p><strong>关于人在不想干正事的时候能干出啥来。。。</strong></p>
 </blockquote>
 <h1>第一次记录：2024年12月24日丑时</h1>
 <p><img src="/img/rust-2/1734977873447.png" alt="1734977873447"></p>
 <p>有不少 Bug，稳定性可能不是很好，但是很爽！（比如优先级问题）</p>
 <p><strong>项目结构如下！</strong></p>
-<pre><code>MrMath
-├─ ...
-├─ Cargo.lock
-├─ Cargo.toml
-└─ src
-   ├─ backend
-   │  ├─ ast.rs
-   │  ├─ bigint
-   │  │  ├─ fraction.rs
-   │  │  ├─ matrix.rs
-   │  │  └─ mod.rs
-   │  ├─ driver.rs
-   │  ├─ interpreter
-   │  │  └─ mod.rs
-   │  ├─ mod.rs
-   │  └─ parser
-   │     ├─ mod.rs
-   │     └─ token.pest
-   ├─ basic
-   ├─ frontend
-   │  ├─ help.rs
-   │  ├─ history.rs
-   │  ├─ mod.rs
-   │  └─ service.rs
-   ├─ hello.rs
-   └─ main.rs
-
-</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">MrMath<br>├─ ...<br>├─ Cargo.lock<br>├─ Cargo.toml<br>└─ src<br>   ├─ backend<br>   │  ├─ ast.rs<br>   │  ├─ bigint<br>   │  │  ├─ fraction.rs<br>   │  │  ├─ matrix.rs<br>   │  │  └─ mod.rs<br>   │  ├─ driver.rs<br>   │  ├─ interpreter<br>   │  │  └─ mod.rs<br>   │  ├─ mod.rs<br>   │  └─ parser<br>   │     ├─ mod.rs<br>   │     └─ token.pest<br>   ├─ basic<br>   ├─ frontend<br>   │  ├─ help.rs<br>   │  ├─ history.rs<br>   │  ├─ mod.rs<br>   │  └─ service.rs<br>   ├─ hello.rs<br>   └─ main.rs<br><br></code></pre></td></tr></table></figure>
 <p>其中 token.pest 文件如下：</p>
-<pre><code class="language-rust">WHITE_SPACE = _{ &quot; &quot; | &quot;\t&quot; | &quot;\r&quot; }
-GRAMMAR = { SOI ~ TRANS_UNIT ~ EOI }
-NEWLINE = _{ &quot;\n&quot; }
-
-TRANS_UNIT = { BLOCK }
-// BLOCK = { (STMT ~ NEWLINE) + }
-BLOCK = { STMT* }
-STMT = { VAR_STMT | EXPR_STMT | PRINT_STMT }
-
-VAR_STMT = { VAR ~ WHITE_SPACE* ~ ID ~ WHITE_SPACE* ~ &quot;=&quot; ~ WHITE_SPACE* ~ TYPE ~ WHITE_SPACE* ~ EXPR ~ WHITE_SPACE* ~ &quot;;&quot; }
-// EXPR_STMT = { EXPR ~ WHITE_SPACE* ~ &quot;;&quot; }
-EXPR_STMT = { EXPR ~ WHITE_SPACE* }
-PRINT_STMT = { &quot;print&quot; ~ WHITE_SPACE* ~ EXPR ~ WHITE_SPACE* ~ &quot;;&quot; }
-
-ID = { ASCII_ALPHA ~ ASCII_ALPHA_NUM* }
-ASCII_ALPHA_NUM = { ASCII_ALPHA | ASCII_DIGIT }
-EXPR = { ATOM_EXPR ~ (INFIX_OPS ~ ATOM_EXPR)*  }
-PREFIX_OPS = { (WHITE_SPACE* ~ PREFIX_OP)* ~ WHITE_SPACE* }
-POSTFIX_OPS = { (WHITE_SPACE* ~ POSTFIX_OP)* }
-INFIX_OPS = { WHITE_SPACE* ~ INFIX_OP ~ WHITE_SPACE*}
-ATOM_EXPR = { PREFIX_OPS ~ PRIMARY_EXPR ~ POSTFIX_OPS }
-PRIMARY_EXPR = { INTEGER | FRACTION | VECTOR | MATRIX | &quot;(&quot; ~ WHITE_SPACE* ~ EXPR ~ WHITE_SPACE* ~ &quot;)&quot; }
-EXPR_SHORT = { ATOM_EXPR_SHORT ~ (INFIX_OPS ~ ATOM_EXPR_SHORT)*  }
-ATOM_EXPR_SHORT = { PREFIX_OPS ~ PRIMARY_EXPR ~ POSTFIX_OPS }
-PRIMARY_EXPR_SHORT = { INTEGER | FRACTION }
-
-TYPE = { INT_TYPE | FRAC_TYPE | VECTOR_TYPE | MATRIX_TYPE }
-INT_TYPE = { &quot;Int&quot; }
-FRAC_TYPE = { &quot;Frac&quot; }
-MATRIX_TYPE = { &quot;Mat&quot; | &quot;Matrix&quot; }
-VECTOR_TYPE = { &quot;Vec&quot; | &quot;Vector&quot; }
-
-PREFIX_OP = { &quot;abs&quot; | &quot;+&quot; | &quot;-&quot; }
-POSTFIX_OP = { &quot;!&quot; | &quot;^T&quot; }
-INFIX_OP = { MOD_OP | MUL_OP | ADD_OP }
-MOD_OP = { &quot;%&quot; | &quot;**&quot; }
-MUL_OP = { &quot;*&quot; | &quot;//&quot; }
-ADD_OP = { &quot;+&quot; | &quot;-&quot; }
-
-INTEGER = { ASCII_DIGIT+ }
-// FRACTION = { &quot;Frac&quot; ~ &quot;[&quot; ~ WHITE_SPACE* ~ EXPR_SHORT ~ WHITE_SPACE* ~ &quot;,&quot; ~ WHITE_SPACE* ~ EXPR_SHORT ~ WHITE_SPACE* ~ &quot;]&quot; }
-FRACTION = { &quot;Frac&quot; ~ &quot;[&quot; ~ WHITE_SPACE* ~ INTEGER ~ WHITE_SPACE* ~ &quot;,&quot; ~ WHITE_SPACE* ~ INTEGER ~ WHITE_SPACE* ~ &quot;]&quot; }
-MATRIX = { &quot;Mat&quot; ~ &quot;[&quot; ~ WHITE_SPACE* ~ MATRIX_ROWS ~ WHITE_SPACE* ~ &quot;]&quot; }
-MATRIX_ROWS = { VECTOR_ROW ~ (WHITE_SPACE* ~ &quot;,&quot; ~ WHITE_SPACE* ~ VECTOR_ROW)* }
-VECTOR = { &quot;Vec&quot; ~ VECTOR_ROW }
-// VECTOR_ROW = { &quot;[&quot; ~ WHITE_SPACE* ~ EXPR_SHORT ~ (WHITE_SPACE* ~ &quot;,&quot; ~ WHITE_SPACE* ~ EXPR_SHORT)* ~ WHITE_SPACE* ~ &quot;]&quot; }
-VECTOR_ROW = { &quot;[&quot; ~ WHITE_SPACE* ~ INTEGER ~ (WHITE_SPACE* ~ &quot;,&quot; ~ WHITE_SPACE* ~ INTEGER)* ~ WHITE_SPACE* ~ &quot;]&quot; }
-
-VAR = { &quot;var&quot; }
-</code></pre>
+<figure class="highlight rust"><table><tr><td class="code"><pre><code class="hljs rust">WHITE_SPACE = _&#123; <span class="hljs-string">&quot; &quot;</span> | <span class="hljs-string">&quot;\t&quot;</span> | <span class="hljs-string">&quot;\r&quot;</span> &#125;<br>GRAMMAR = &#123; SOI ~ TRANS_UNIT ~ EOI &#125;<br>NEWLINE = _&#123; <span class="hljs-string">&quot;\n&quot;</span> &#125;<br><br>TRANS_UNIT = &#123; BLOCK &#125;<br><span class="hljs-comment">// BLOCK = &#123; (STMT ~ NEWLINE) + &#125;</span><br>BLOCK = &#123; STMT* &#125;<br>STMT = &#123; VAR_STMT | EXPR_STMT | PRINT_STMT &#125;<br><br>VAR_STMT = &#123; VAR ~ WHITE_SPACE* ~ ID ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;=&quot;</span> ~ WHITE_SPACE* ~ TYPE ~ WHITE_SPACE* ~ EXPR ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;;&quot;</span> &#125;<br><span class="hljs-comment">// EXPR_STMT = &#123; EXPR ~ WHITE_SPACE* ~ &quot;;&quot; &#125;</span><br>EXPR_STMT = &#123; EXPR ~ WHITE_SPACE* &#125;<br>PRINT_STMT = &#123; <span class="hljs-string">&quot;print&quot;</span> ~ WHITE_SPACE* ~ EXPR ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;;&quot;</span> &#125;<br><br>ID = &#123; ASCII_ALPHA ~ ASCII_ALPHA_NUM* &#125;<br>ASCII_ALPHA_NUM = &#123; ASCII_ALPHA | ASCII_DIGIT &#125;<br>EXPR = &#123; ATOM_EXPR ~ (INFIX_OPS ~ ATOM_EXPR)*  &#125;<br>PREFIX_OPS = &#123; (WHITE_SPACE* ~ PREFIX_OP)* ~ WHITE_SPACE* &#125;<br>POSTFIX_OPS = &#123; (WHITE_SPACE* ~ POSTFIX_OP)* &#125;<br>INFIX_OPS = &#123; WHITE_SPACE* ~ INFIX_OP ~ WHITE_SPACE*&#125;<br>ATOM_EXPR = &#123; PREFIX_OPS ~ PRIMARY_EXPR ~ POSTFIX_OPS &#125;<br>PRIMARY_EXPR = &#123; INTEGER | FRACTION | VECTOR | MATRIX | <span class="hljs-string">&quot;(&quot;</span> ~ WHITE_SPACE* ~ EXPR ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;)&quot;</span> &#125;<br>EXPR_SHORT = &#123; ATOM_EXPR_SHORT ~ (INFIX_OPS ~ ATOM_EXPR_SHORT)*  &#125;<br>ATOM_EXPR_SHORT = &#123; PREFIX_OPS ~ PRIMARY_EXPR ~ POSTFIX_OPS &#125;<br>PRIMARY_EXPR_SHORT = &#123; INTEGER | FRACTION &#125;<br><br>TYPE = &#123; INT_TYPE | FRAC_TYPE | VECTOR_TYPE | MATRIX_TYPE &#125;<br>INT_TYPE = &#123; <span class="hljs-string">&quot;Int&quot;</span> &#125;<br>FRAC_TYPE = &#123; <span class="hljs-string">&quot;Frac&quot;</span> &#125;<br>MATRIX_TYPE = &#123; <span class="hljs-string">&quot;Mat&quot;</span> | <span class="hljs-string">&quot;Matrix&quot;</span> &#125;<br>VECTOR_TYPE = &#123; <span class="hljs-string">&quot;Vec&quot;</span> | <span class="hljs-string">&quot;Vector&quot;</span> &#125;<br><br>PREFIX_OP = &#123; <span class="hljs-string">&quot;abs&quot;</span> | <span class="hljs-string">&quot;+&quot;</span> | <span class="hljs-string">&quot;-&quot;</span> &#125;<br>POSTFIX_OP = &#123; <span class="hljs-string">&quot;!&quot;</span> | <span class="hljs-string">&quot;^T&quot;</span> &#125;<br>INFIX_OP = &#123; MOD_OP | MUL_OP | ADD_OP &#125;<br>MOD_OP = &#123; <span class="hljs-string">&quot;%&quot;</span> | <span class="hljs-string">&quot;**&quot;</span> &#125;<br>MUL_OP = &#123; <span class="hljs-string">&quot;*&quot;</span> | <span class="hljs-string">&quot;//&quot;</span> &#125;<br>ADD_OP = &#123; <span class="hljs-string">&quot;+&quot;</span> | <span class="hljs-string">&quot;-&quot;</span> &#125;<br><br>INTEGER = &#123; ASCII_DIGIT+ &#125;<br><span class="hljs-comment">// FRACTION = &#123; &quot;Frac&quot; ~ &quot;[&quot; ~ WHITE_SPACE* ~ EXPR_SHORT ~ WHITE_SPACE* ~ &quot;,&quot; ~ WHITE_SPACE* ~ EXPR_SHORT ~ WHITE_SPACE* ~ &quot;]&quot; &#125;</span><br>FRACTION = &#123; <span class="hljs-string">&quot;Frac&quot;</span> ~ <span class="hljs-string">&quot;[&quot;</span> ~ WHITE_SPACE* ~ INTEGER ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;,&quot;</span> ~ WHITE_SPACE* ~ INTEGER ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;]&quot;</span> &#125;<br>MATRIX = &#123; <span class="hljs-string">&quot;Mat&quot;</span> ~ <span class="hljs-string">&quot;[&quot;</span> ~ WHITE_SPACE* ~ MATRIX_ROWS ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;]&quot;</span> &#125;<br>MATRIX_ROWS = &#123; VECTOR_ROW ~ (WHITE_SPACE* ~ <span class="hljs-string">&quot;,&quot;</span> ~ WHITE_SPACE* ~ VECTOR_ROW)* &#125;<br>VECTOR = &#123; <span class="hljs-string">&quot;Vec&quot;</span> ~ VECTOR_ROW &#125;<br><span class="hljs-comment">// VECTOR_ROW = &#123; &quot;[&quot; ~ WHITE_SPACE* ~ EXPR_SHORT ~ (WHITE_SPACE* ~ &quot;,&quot; ~ WHITE_SPACE* ~ EXPR_SHORT)* ~ WHITE_SPACE* ~ &quot;]&quot; &#125;</span><br>VECTOR_ROW = &#123; <span class="hljs-string">&quot;[&quot;</span> ~ WHITE_SPACE* ~ INTEGER ~ (WHITE_SPACE* ~ <span class="hljs-string">&quot;,&quot;</span> ~ WHITE_SPACE* ~ INTEGER)* ~ WHITE_SPACE* ~ <span class="hljs-string">&quot;]&quot;</span> &#125;<br><br>VAR = &#123; <span class="hljs-string">&quot;var&quot;</span> &#125;<br></code></pre></td></tr></table></figure>
 <p>设计还很不完善，但是已经可以运行了，不枉三天功夫。</p>
 <p>乐，明天早上还要交 <strong>代数</strong> 作业，，，</p>
 <h1>第二次记录：2024年12月28日子时</h1>
 <p><strong>A Math Calculator implementation in Rust.</strong><br>
 MrMath = My Rust Math Calculator</p>
-<pre><code>MrMath
-├─ Cargo.lock
-├─ Cargo.toml
-└─ src
-   ├─ backend
-   │  ├─ bigint
-   │  │  ├─ fraction.rs
-   │  │  ├─ matrix.rs
-   │  │  └─ mod.rs
-   │  ├─ driver.rs
-   │  ├─ interpreter
-   │  │  ├─ interpreter.rs
-   │  │  └─ mod.rs
-   │  ├─ mod.rs
-   │  ├─ parser
-   │  │  ├─ mod.rs
-   │  │  └─ token.pest
-   │  └─ structure
-   │     ├─ ast.rs
-   │     └─ mod.rs
-   ├─ basic
-   ├─ files
-   │  ├─ manual
-   │  │  ├─ fraction.txt
-   │  │  ├─ integer.txt
-   │  │  ├─ matrix.txt
-   │  │  ├─ variable.txt
-   │  │  └─ vector.txt
-   │  └─ tables
-   │     └─ keywords.txt
-   ├─ frontend
-   │  ├─ check.rs
-   │  ├─ help.rs
-   │  ├─ history.rs
-   │  ├─ mod.rs
-   │  └─ service.rs
-   ├─ hello.rs
-   └─ main.rs
-
-</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">MrMath<br>├─ Cargo.lock<br>├─ Cargo.toml<br>└─ src<br>   ├─ backend<br>   │  ├─ bigint<br>   │  │  ├─ fraction.rs<br>   │  │  ├─ matrix.rs<br>   │  │  └─ mod.rs<br>   │  ├─ driver.rs<br>   │  ├─ interpreter<br>   │  │  ├─ interpreter.rs<br>   │  │  └─ mod.rs<br>   │  ├─ mod.rs<br>   │  ├─ parser<br>   │  │  ├─ mod.rs<br>   │  │  └─ token.pest<br>   │  └─ structure<br>   │     ├─ ast.rs<br>   │     └─ mod.rs<br>   ├─ basic<br>   ├─ files<br>   │  ├─ manual<br>   │  │  ├─ fraction.txt<br>   │  │  ├─ integer.txt<br>   │  │  ├─ matrix.txt<br>   │  │  ├─ variable.txt<br>   │  │  └─ vector.txt<br>   │  └─ tables<br>   │     └─ keywords.txt<br>   ├─ frontend<br>   │  ├─ check.rs<br>   │  ├─ help.rs<br>   │  ├─ history.rs<br>   │  ├─ mod.rs<br>   │  └─ service.rs<br>   ├─ hello.rs<br>   └─ main.rs<br><br></code></pre></td></tr></table></figure>
 <p>添加了不少功能，实现了<strong>变量</strong>和<strong>常量</strong>，定义更加灵活，支持<strong>整数、分数、向量和矩阵的运算</strong>，分数、向量和矩阵的定义中可以包含部分复杂的表达式。</p>
 <p><img src="/img/rust-2/1735320570968.png" alt="1735320570968"></p>
 <p><strong>该去回头学理论泡论文写开题报告力。。。</strong></p>
 <blockquote>
 <p><strong>估计后面会有一长段时间不碰这个了。</strong></p>
 </blockquote>
-</div><div class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2024-12-24</span>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Coding/" title="Coding">Coding</a>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Rust/" title="Rust">Rust</a>  </span></div></div><p class="pagination"><a href="/2025/01/02/amidnight-1/" title="一次深夜随笔">Previous</a><span>  </span><a href="/2024/12/23/rust-1/" title="Rust 实现（一个弱智的）大整数计算">Next</a></p></div><footer class="footer"><br><p>Comment Allez Vous!</p></footer></body></html>
+</section><section class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2024-12-24</span>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Coding/" title="Coding">Coding</a>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Rust/" title="Rust">Rust</a>  </span></section></article><p class="pagination"><a href="/2025/01/02/amidnight-1/" title="一次深夜随笔">上一篇</a><span>  </span><a href="/2024/12/23/rust-1/" title="Rust 实现（一个弱智的）大整数计算">下一篇</a></p></main><footer class="footer"><br></footer><script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof pseudocode === 'undefined') {
+        console.warn('pseudocode.js library not loaded, cannot render pseudocode blocks');
+        return;
+      }
+      const pseudocodeElements = document.querySelectorAll('pre.pseudocode');
+      pseudocodeElements.forEach(function(element) {
+        try {
+          pseudocode.renderElement(element);
+        } catch (error) {
+          console.error('Failed to render pseudocode block:', error, element);
+        }
+      });
+    });
+  </script></body></html>
