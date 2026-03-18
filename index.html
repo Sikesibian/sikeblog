@@ -5,11 +5,32 @@ Utils.loadCSS("/css/font-awesome.min.css");</script><script src="https://cdnjs.c
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head><body class="index-page"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&amp;family=Noto+Serif+KR:wght@200..900&amp;family=Noto+Serif+SC:wght@200..900&amp;family=Noto+Serif+TC:wght@200..900&amp;family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"></noscript><nav class="nav"><a href="/">首页</a>&nbsp;&nbsp;<a href="/archives">归档</a>&nbsp;&nbsp;<a href="/tags">标签</a>&nbsp;&nbsp;<a href="/about">关于</a>&nbsp;&nbsp;<a href="/search">搜索</a>&nbsp;&nbsp;<a href="javascript:SoSimple.darkLightToggle()">Dark/Light Mode</a></nav><main class="main"><header class="post-container index-post"><h1>Sikesibian's Blog</h1><div class="description"><p>Let's fall in L0V3</p></div></header><article class="post-container post-excerpt"><header class="post-title"><h3><a href="/2026/03/10/ECC1/">一个常数时间双并行Montgomery算法的简单说明</a></h3></header><section class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2026-03-10</span>  </span></section><section class="post-body">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head><body class="index-page"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&amp;family=Noto+Serif+KR:wght@200..900&amp;family=Noto+Serif+SC:wght@200..900&amp;family=Noto+Serif+TC:wght@200..900&amp;family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"></noscript><nav class="nav"><a href="/">首页</a>&nbsp;&nbsp;<a href="/archives">归档</a>&nbsp;&nbsp;<a href="/tags">标签</a>&nbsp;&nbsp;<a href="/about">关于</a>&nbsp;&nbsp;<a href="/search">搜索</a>&nbsp;&nbsp;<a href="javascript:SoSimple.darkLightToggle()">Dark/Light Mode</a></nav><main class="main"><header class="post-container index-post"><h1>Sikesibian's Blog</h1><div class="description"><p>Let's fall in L0V3</p></div></header><article class="post-container post-excerpt"><header class="post-title"><h3><a href="/2026/03/18/lattice2/">【格理论（二）】傅里叶变换与对偶格</a></h3></header><section class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2026-03-18</span>  </span></section><section class="post-body">傅里叶变换与对偶格
+转移定理（Transference 定理/Banaszczyk 定理）
+Minkowski定理的简单推广
+根据作业启发，对相应理论进行了粗略的了解与整理。
+基于余元公式的简单推广
+对于 Gamma 函数来说，我们有一个很有趣且常用的公式，称为余元公式：
+
+Γ(1/p)⋅Γ(1−1/p)=πsin⁡(</section></article><article class="post-container post-excerpt"><header class="post-title"><h3><a href="/2026/03/18/lattice1/">【格理论（一）】投影格与格基规约</a></h3></header><section class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2026-03-18</span>  </span></section><section class="post-body">
+
+
+
+
+
+~   横看成岭侧成峰   ~~   远近高低各不同    ~
+
+——苏轼《题西林壁》
+
+
+
+Minkowski 第二定理与投影格
+Minkowski 第二定理的证明中，我们事实上可以注意到一个事实：
+y∈span(b~1,⋯ ,b~i)  ⟺  y∈span(b1,⋯ ,bi)y\in \text{spa</section></article><article class="post-container post-excerpt"><header class="post-title"><h3><a href="/2026/03/10/ECC1/">一个常数时间双并行Montgomery算法的简单说明</a></h3></header><section class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2026-03-10</span>  </span></section><section class="post-body">
 考虑使用 P+Q ←\leftarrow← xADD(P, Q, P-Q) 和 [2]P ←\leftarrow← xDBL(P) 实现 [m]P + [n]Q 的常数时间双并行计算。
 
 我们可以将 mmm 和 nnn 分解成二进制形式：
-[m]P+[n]Q=[∑i=0k−1b0,i2i]P+[∑i=0k−1b1,i</section></article><article class="post-container post-excerpt"><header class="post-title"><h3><a href="/2026/03/05/lattice0/">Some Thoughts on Lattice Class1</a></h3></header><section class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2026-03-05</span>  </span></section><section class="post-body">
+[m]P+[n]Q=[∑i=0k−1b0,i2i]P+[∑i=0k−1b1,i</section></article><article class="post-container post-excerpt"><header class="post-title"><h3><a href="/2026/03/05/lattice0/">【格理论（零）】Minkowski 定理及其简单推广</a></h3></header><section class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2026-03-05</span>  </span></section><section class="post-body">
 
 
 
@@ -72,18 +93,7 @@ un/un</section></article><article class="post-container post-excerpt"><header cl
 
 特征标表：Character tables
 线性群：Linear and projective linear groups
-多项式的Galois群：Transitive groups of degree up t</section></article><article class="post-container post-excerpt"><header class="post-title"><h3><a href="/2025/01/02/amidnight-1/">一次深夜随笔</a></h3></header><section class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2025-01-02</span>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/%E9%9A%8F%E7%AC%94/" title="随笔">随笔</a>  </span></section><section class="post-body">
-本预找回高中时的一份数学笔记，反而促使我开始回忆那段长达6年的中学时光，深夜有感，零零碎碎拼凑得此篇。
-
-我的语文不是很好，我并不擅长预习。小学老师说有时候他喜欢写一些人生随笔，而我看着作文本上的“题记”二字不知道如何预习人生。
-我的语文不是很好，老师们常常这么说。我总是理不清拐弯抹角的题干，分不清“意义”与“作用”</section></article><article class="post-container post-excerpt"><header class="post-title"><h3><a href="/2024/12/24/rust-2/">手搓的简易基于 rust 的自己设计数学语言的解释器，很爽！</a></h3></header><section class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2024-12-24</span>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Coding/" title="Coding">Coding</a>  </span><span class="info"><i class="fa fa-tag"></i> <a href="/tags/Rust/" title="Rust">Rust</a>  </span></section><section class="post-body">
-关于人在不想干正事的时候能干出啥来。。。
-
-第一次记录：2024年12月24日丑时
-
-有不少 Bug，稳定性可能不是很好，但是很爽！（比如优先级问题）
-项目结构如下！
-MrMath├─ ...├─ Cargo.lock├─ Cargo.toml└─ src   ├─ backend   │  ├─ ast.rs   </section></article><p class="pagination"><a href="/page/2/">下一页</a></p></main><footer class="footer"><br></footer><script>
+多项式的Galois群：Transitive groups of degree up t</section></article><p class="pagination"><a href="/page/2/">下一页</a></p></main><footer class="footer"><br></footer><script>
     document.addEventListener('DOMContentLoaded', function () {
       if (typeof pseudocode === 'undefined') {
         console.warn('pseudocode.js library not loaded, cannot render pseudocode blocks');
