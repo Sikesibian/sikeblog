@@ -1,0 +1,664 @@
+<!DOCTYPE html><html lang="zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="Sike"><title>Vélu 公式学习材料 · Sikesibian's Blog</title><meta name="description" content="window.MathJax = {
+    tex: {
+      inlineMath: [[&#039;$&#039;, &#039;$&#039;], [&#039;\\(&#039;, &#039;\\)&#039;]],
+      displayMath: [[&#039;$$&#039;, &#039;$$&#039;], [&#039;\\[&#039;, &#039;\\]&#039;]]
+    }
+  };
+
+
+
+
+  椭圆曲线同"><meta name="keywords" content="Blog,Article"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="mobile-web-app-capable" content="yes"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta id="site_data_static" data-url="/"><meta name="renderer" content="webkit"><link rel="shortcut icon" type="image/x-icon" href="/images/logo.png"><link rel="stylesheet" href="/js_complied/bundle.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><style>:root { --normal-font-face: 'Noto Serif', 'Noto Serif SC', 'Noto Serif TC', 'Noto Serif JP', 'Noto Serif KR', 'Times New Roman', Times, serif; }</style><style>.ps-comment { color: #008080 !important; font-style: italic; }</style><script src="/js_complied/bundle.js"></script><script>Utils.loadCSS("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&family=Noto+Serif+KR:wght@200..900&family=Noto+Serif+SC:wght@200..900&family=Noto+Serif+TC:wght@200..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap");
+Utils.loadCSS("https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css");
+Utils.loadCSS("https://cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.css");
+Utils.loadCSS("/css/font-awesome.min.css");</script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.js" integrity="sha512-EKW5YvKU3hpyyOcN6jQnAxO/L8gts+YdYV6Yymtl8pk9YlYFtqJgihORuRoBXK8/cOIlappdU6Ms8KdK6yBCgA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><script src="https://cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.js"></script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head><body class="post-page"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&amp;family=Noto+Serif+KR:wght@200..900&amp;family=Noto+Serif+SC:wght@200..900&amp;family=Noto+Serif+TC:wght@200..900&amp;family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"></noscript><nav class="nav"><a href="/">首页</a>&nbsp;&nbsp;<a href="/archives">归档</a>&nbsp;&nbsp;<a href="/tags">标签</a>&nbsp;&nbsp;<a href="/about">关于</a>&nbsp;&nbsp;<a href="/search">搜索</a>&nbsp;&nbsp;<a href="javascript:SoSimple.darkLightToggle()">Dark/Light Mode</a></nav><main class="main"><article class="post-container post-full"><header class="post-title"><h1>Vélu 公式学习材料</h1></header><section class="post-body">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<div class="ctl-wrapper">
+  <h2 class="ctl-main-title">椭圆曲线同源计算发展史</h2>
+  <div class="ctl-container">
+    <div class="ctl-phase p1">形成与发展期 (1971-1998)</div>
+    <div class="ctl-row">
+      <div class="ctl-line"></div>
+      <div class="ctl-half ctl-left">
+        <div class="ctl-card" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">1971</div>
+            <div class="ctl-text">
+              <div class="ctl-title">Vélu 公式</div>
+              <div class="ctl-desc">首次提出椭圆曲线同源显式计算方法</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <script type="text/markdown" class="ctl-markdown">
+
+### 历史概述
+
+**在1971年之前，椭圆曲线之间的同源只有抽象存在性，缺乏具体计算公式。**
+
+在 20 世纪中叶，椭圆曲线和同源（Isogeny）理论在代数几何中已经有了深入的研究（例如 Tate、Serre 等人的工作）。当时的数学家们明确知道：给定一条椭圆曲线 $E$ 和其上的一个有限子群 $G$，必然存在一条目标曲线 $E'$ 以及一个同源映射 $\phi: E \to E'$，使得该映射的核（Kernel）恰好是 $G$。
+
+然而，这种认知是“抽象”的。如果给定一条具体的 Weierstrass 方程，数学家们并没有一个通用的、代数上的显式公式来直接算出目标曲线的系数和映射的有理分式。 **直到 1971 年，法国数学家 Jacques Vélu 发表了短篇论文，彻底打破了计算壁垒。** 他给出了直接利用点坐标多项式计算目标曲线和映射有理分式的优美公式，使同源映射正式从“存在性定理”变成了复杂度为 $O(\ell)$ 的“可执行算法”。
+
+---
+
+### Vélu 公式简介
+
+给定特征不为 2 或 3 的域上的椭圆曲线 Weierstrass 方程：
+
+$$E: y^2 = x^3 + Ax + B$$
+
+以及一个大小为 $\ell$ 的有限子群 $G \subset E$。为了避免在求和中重复计算互为逆元的点，我们将非平凡元素 $G \setminus \{\mathcal{O}\}$ 划分为两个集合 $S$ 和 $-S$，使得：
+
+$$S \cup (-S) = G \setminus \{\mathcal{O}\}, \quad S \cap (-S) = \emptyset$$
+
+集合 $S$ 的大小为 $(\ell-1)/2$。后续的所有求和计算都将仅在集合 $S$ 上遍历。
+
+对于每个点 $Q = (x_Q, y_Q) \in S$，计算局部参数：
+
+$$t_Q = 3x_Q^2 + A, \quad u_Q = 2y_Q^2$$
+
+接着计算全局累加和：
+
+$$t = \sum_{Q \in S} t_Q, \quad w = \sum_{Q \in S} (u_Q + x_Q t_Q)$$
+
+**目标曲线方程 $E': y^2 = x^3 + A'x + B'$**
+
+$$A' = A - 5t, \quad B' = B - 7w$$
+
+**同源映射的坐标多项式 $\phi(x,y)$**
+
+$$\phi_x(P) = x_P + \sum_{Q \in S} \left( \frac{t_Q}{x_P - x_Q} + \frac{u_Q}{(x_P - x_Q)^2} \right)$$
+          </script>
+          <div class="ctl-ref" style="display:none;">
+            Ref: Vélu, J. <a href="https://aghitza.github.io/publications/translation-velu.pdf" target="_blank">Isogenies between elliptic curves</a><br>
+            辅助理解材料 <a href="https://ocw.mit.edu/courses/18-783-elliptic-curves-spring-2021/a594ab394477ba96f9e8559635265ef1_MIT18_783S21_notes4.pdf" target="_blank">MIT 18.783 Lecture 4</a>
+          </div>
+        </div>
+      </div>
+      <div class="ctl-dot d1"></div>
+      <div class="ctl-half ctl-right"></div>
+    </div>
+    <div class="ctl-row">
+      <div class="ctl-line"></div>
+      <div class="ctl-half ctl-left"></div>
+      <div class="ctl-dot d1"></div>
+      <div class="ctl-half ctl-right">
+        <div class="ctl-card" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">1972</div>
+            <div class="ctl-text">
+              <div class="ctl-title">Stark 方法</div>
+              <div class="ctl-desc">发展了复乘理论与模多项式</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <script type="text/markdown" class="ctl-markdown">
+
+### 历史概述
+
+**在1971年之前，椭圆曲线之间的同源只有抽象存在性，缺乏具体计算公式。**
+
+在 20 世纪中叶，椭圆曲线和同源（Isogeny）理论在代数几何中已经有了深入的研究（例如 Tate、Serre 等人的工作）。当时的数学家们明确知道：给定一条椭圆曲线 $E$ 和其上的一个有限子群 $G$，必然存在一条目标曲线 $E'$ 以及一个同源映射 $\phi: E \to E'$，使得该映射的核（Kernel）恰好是 $G$。
+
+然而，这种认知是“抽象”的。如果给定一条具体的 Weierstrass 方程，数学家们并没有一个通用的、代数上的显式公式来直接算出目标曲线的系数和映射的有理分式。 **直到 1971 年，法国数学家 Jacques Vélu 发表了短篇论文，彻底打破了计算壁垒。** 他给出了直接利用点坐标多项式计算目标曲线和映射有理分式的优美公式，使同源映射正式从“存在性定理”变成了复杂度为 $O(\ell)$ 的“可执行算法”。
+
+---
+
+### Vélu 公式简介
+
+给定特征不为 2 或 3 的域上的椭圆曲线 Weierstrass 方程：
+
+$$E: y^2 = x^3 + Ax + B$$
+
+以及一个大小为 $\ell$ 的有限子群 $G \subset E$。为了避免在求和中重复计算互为逆元的点，我们将非平凡元素 $G \setminus \{\mathcal{O}\}$ 划分为两个集合 $S$ 和 $-S$，使得：
+
+$$S \cup (-S) = G \setminus \{\mathcal{O}\}, \quad S \cap (-S) = \emptyset$$
+
+集合 $S$ 的大小为 $(\ell-1)/2$。后续的所有求和计算都将仅在集合 $S$ 上遍历。
+
+对于每个点 $Q = (x_Q, y_Q) \in S$，计算局部参数：
+
+$$t_Q = 3x_Q^2 + A, \quad u_Q = 2y_Q^2$$
+
+接着计算全局累加和：
+
+$$t = \sum_{Q \in S} t_Q, \quad w = \sum_{Q \in S} (u_Q + x_Q t_Q)$$
+
+**目标曲线方程 $E': y^2 = x^3 + A'x + B'$**
+
+$$A' = A - 5t, \quad B' = B - 7w$$
+
+**同源映射的坐标多项式 $\phi(x,y)$**
+
+$$\phi_x(P) = x_P + \sum_{Q \in S} \left( \frac{t_Q}{x_P - x_Q} + \frac{u_Q}{(x_P - x_Q)^2} \right)$$
+          </script>
+          <div class="ctl-ref" style="display:none;">Ref: Stark, H. M. <a href="https://link.springer.com/chapter/10.1007/978-3-540-38509-7_5" target="_blank">Class-Numbers of Complex Quadratic Fields</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="ctl-row">
+      <div class="ctl-line"></div>
+      <div class="ctl-half ctl-left">
+        <div class="ctl-card" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">1990</div>
+            <div class="ctl-text">
+              <div class="ctl-title">Elkies 公式</div>
+              <div class="ctl-desc">同源的有理分式形式，SEA算法核心</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <div class="ctl-deep" style="display:none;">
+            SEA 算法在数点上的关键突破。通过寻找模多项式的根来确定同源的核多项式，从而以有理分式的高效形式计算同源，极大地加速了大特征有限域上的标量乘法与数点效率。
+          </div>
+          <div class="ctl-ref" style="display:none;">Ref: Elkies, N. D. <a href="https://people.math.harvard.edu/~elkies/modular.pdf" target="_blank">Elliptic and modular curves over finite fields and related computational issues</a></div>
+        </div>
+      </div>
+      <div class="ctl-dot d1"></div>
+      <div class="ctl-half ctl-right">
+        <div class="ctl-card" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">1994</div>
+            <div class="ctl-text">
+              <div class="ctl-title">Couveignes 算法</div>
+              <div class="ctl-desc">小特征域椭圆曲线的同源计算</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <div class="ctl-deep" style="display:none;">
+            <strong>深度介绍：</strong>解决了 Elkies 方法在小特征域上因形式导数为零而失效的困境。该算法巧妙利用了 $p$-挠子群 ($p$-torsion) 上的形式群来进行同源计算。
+          </div>
+          <div class="ctl-ref" style="display:none;">Ref: Couveignes, J. M. <a href="https://theses.hal.science/tel-00843943" target="_blank">[HAL]</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="ctl-row">
+      <div class="ctl-line"></div>
+      <div class="ctl-half ctl-left">
+        <div class="ctl-card" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">1996</div>
+            <div class="ctl-text">
+              <div class="ctl-title">Lercier 算法</div>
+              <div class="ctl-desc">特征 2 域椭圆曲线同源计算</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <div class="ctl-deep" style="display:none;">
+            <strong>深度介绍：</strong>针对特征 2 的有限域 $\mathbb{F}_{2^n}$ 构建了基于形式代数的专用算法。由于特征 2 域在硬件实现中的高效性，此算法对早期基于硬件的椭圆曲线密码学极其重要。
+          </div>
+          <div class="ctl-ref" style="display:none;">Ref: Lercier, R. <a href="https://doi.org/10.1090/S0025-5718-96-00679-0" target="_blank">[DOI]</a></div>
+        </div>
+      </div>
+      <div class="ctl-dot d1"></div>
+      <div class="ctl-half ctl-right">
+        <div class="ctl-card" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">1996</div>
+            <div class="ctl-text">
+              <div class="ctl-title">Couveignes 改进</div>
+              <div class="ctl-desc">插值法计算同源</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <div class="ctl-deep" style="display:none;">
+            <strong>深度介绍：</strong>提出基于有理插值的方法计算同源代数表达，避免了部分复杂的塔式代数扩张计算，完善了小特征域同源工具链，降低了常数时间开销。
+          </div>
+          <div class="ctl-ref" style="display:none;">Ref: Couveignes, J. M. <a href="https://doi.org/10.1007/3-540-68530-8_25" target="_blank">[DOI]</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="ctl-row">
+      <div class="ctl-line"></div>
+      <div class="ctl-half ctl-center">
+        <div class="ctl-card ctl-center-card" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">1998</div>
+            <div class="ctl-text">
+              <div class="ctl-title">推广 Elkies 公式</div>
+              <div class="ctl-desc">进一步扩展适用范围与效率</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <div class="ctl-deep" style="display:none;">
+            <strong>深度介绍：</strong>将 Elkies 方法推广到更一般的同源次数 $\ell$ 及更广泛的椭圆曲线方程形式，大幅提高了 SEA 算法的通用性。
+          </div>
+          <div class="ctl-ref" style="display:none;">Ref: Elkies, N. D. <a href="https://arxiv.org/abs/math/9809054" target="_blank">[arXiv]</a></div>
+        </div>
+      </div>
+      <div class="ctl-dot d1"></div>
+    </div>
+    <div class="ctl-phase p2">巩固期 (2008-2016)</div>
+    <div class="ctl-row">
+      <div class="ctl-line"></div>
+      <div class="ctl-half ctl-left">
+        <div class="ctl-card" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">2008</div>
+            <div class="ctl-text">
+              <div class="ctl-title">Lercier 优化</div>
+              <div class="ctl-desc">$p$-进数优化小特征上的计算</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <div class="ctl-deep" style="display:none;">
+            <strong>深度介绍：</strong>引入 $p$-进数解析技巧，将小特征域上的同源核计算提升到 $p$-进精度，克服了特征 $p$ 带来的除法失效问题，显著降低渐进复杂度。
+          </div>
+          <div class="ctl-ref" style="display:none;">Ref: Lercier, R., et al. <a href="https://doi.org/10.1016/j.jsc.2008.02.006" target="_blank">[DOI]</a></div>
+        </div>
+      </div>
+      <div class="ctl-dot d2"></div>
+      <div class="ctl-half ctl-right">
+        <div class="ctl-card" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">2008</div>
+            <div class="ctl-text">
+              <div class="ctl-title">Bostan 优化</div>
+              <div class="ctl-desc">优化 Elkies 方法的计算复杂度</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <div class="ctl-deep" style="display:none;">
+            <strong>深度介绍：</strong>利用快速傅里叶变换 (FFT) 对 Elkies 方法的底层多项式操作进行优化，将时间复杂度逼近拟线性界 $\tilde{O}(\ell)$。
+          </div>
+          <div class="ctl-ref" style="display:none;">Ref: Bostan, A., et al. <a href="https://doi.org/10.1007/978-3-540-85912-3_29" target="_blank">[DOI]</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="ctl-row">
+      <div class="ctl-line"></div>
+      <div class="ctl-half ctl-center">
+        <div class="ctl-card ctl-milestone" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">2010~2016</div>
+            <div class="ctl-text">
+              <div class="ctl-title">Luca De Feo 的奠基性工作</div>
+              <div class="ctl-desc">完成向现代密码学应用跨越的关键转折，为同源密码学奠基</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <div class="ctl-deep" style="display:none;">
+            <strong>里程碑深度介绍：</strong>Luca De Feo 及其合作者系统探讨了普通与超奇异曲线在不同特征下的同源计算复杂度，提出了在超奇异同源图中进行随机游走的哈希函数与密钥交换协议，直接催生了 SIDH，标志着抗量子同源密码学时代的正式开启。
+          </div>
+          <div class="ctl-ref" style="display:none;">Ref: De Feo, L. <a href="https://arxiv.org/abs/1711.04062" target="_blank">[arXiv]</a></div>
+        </div>
+      </div>
+      <div class="ctl-dot d2"></div>
+    </div>
+    <div class="ctl-phase p3">密码驱动发展期 (2017-2022)</div>
+    <div class="ctl-row">
+      <div class="ctl-line"></div>
+      <div class="ctl-half ctl-left">
+        <div class="ctl-card" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">2017</div>
+            <div class="ctl-text">
+              <div class="ctl-title">Montgomery 曲线同源</div>
+              <div class="ctl-desc">系统提出各项底层计算细节</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <div class="ctl-deep" style="display:none;">
+            <strong>深度介绍：</strong>针对 SIDH 协议需求，彻底优化了 Montgomery 曲线上仅使用投影坐标运算的底层公式，极大地减少了有限域上的乘法和平方次数，成为现代同源密码代码库的基石。
+          </div>
+          <div class="ctl-ref" style="display:none;">Ref: Costello, C., et al. <a href="https://eprint.iacr.org/2017/504" target="_blank">[ePrint]</a></div>
+        </div>
+      </div>
+      <div class="ctl-dot d3"></div>
+      <div class="ctl-half ctl-right">
+        <div class="ctl-card" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">2020</div>
+            <div class="ctl-text">
+              <div class="ctl-title">$\sqrt{\text{élu}}$ 公式</div>
+              <div class="ctl-desc">大次数同源，结式+BSGS，次线性</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <div class="ctl-deep" style="display:none;">
+            <strong>深度介绍：</strong>面向 CSIDH 等需大素数次同源的场景。通过将求值问题转化为多项式多点求值问题（运用结式与 BSGS），将 Vélu 公式的复杂度从 $O(\ell)$ 降至次线性 $\tilde{O}(\sqrt{\ell})$。
+          </div>
+          <div class="ctl-ref" style="display:none;">Ref: Bernstein, D. J., et al. <a href="https://eprint.iacr.org/2020/341" target="_blank">[ePrint]</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="ctl-row">
+      <div class="ctl-line"></div>
+      <div class="ctl-half ctl-left">
+        <div class="ctl-card" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">2020</div>
+            <div class="ctl-text">
+              <div class="ctl-title">根式 Vélu (Radical)</div>
+              <div class="ctl-desc">小次数同源，去随机选点，Tate形式</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <div class="ctl-deep" style="display:none;">
+            <strong>深度介绍：</strong>对于密集的同源链，提出利用 Tate 范式和除多项式直接写出目标曲线系数，彻底去除了以往“随机选点求核”的性能瓶颈，实现常数时间计算优化。
+          </div>
+          <div class="ctl-ref" style="display:none;">Ref: Castryck, W., et al. <a href="https://eprint.iacr.org/2021/692" target="_blank">[ePrint]</a></div>
+        </div>
+      </div>
+      <div class="ctl-dot d3"></div>
+      <div class="ctl-half ctl-right">
+        <div class="ctl-card" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">2022</div>
+            <div class="ctl-text">
+              <div class="ctl-title">$\sqrt[N]{\text{élu}}$ 公式</div>
+              <div class="ctl-desc">奇数次同源，去随机选点，Tate配对</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <div class="ctl-deep" style="display:none;">
+            <strong>深度介绍：</strong>根式 Vélu 的泛化版本。结合双线性 Tate 配对等工具，将“去随机选点”优势推广到任意奇数阶同源，实现通用且极其高效的代数结构重构。
+          </div>
+          <div class="ctl-ref" style="display:none;">Ref: On N-th root isogenies <a href="https://eprint.iacr.org/2022/104" target="_blank">[ePrint]</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="ctl-row" style="margin-bottom: 0;">
+      <div class="ctl-line" style="bottom: 0;"></div>
+      <div class="ctl-half ctl-left">
+        <div class="ctl-card" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">2022</div>
+            <div class="ctl-text">
+              <div class="ctl-title">高维同源攻击</div>
+              <div class="ctl-desc">SIDH 的破灭，多项式时间破解</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <div class="ctl-deep" style="display:none;">
+            <strong>深度介绍：</strong>Castryck-Decru 和 Maino-Martindale 等人突破性地利用 Kani 定理与高维阿贝尔簇（Abelian Surfaces）上的同源计算，将 1 维同源问题提升到 2 维及以上，在多项式时间内破解了 SIDH。
+          </div>
+          <div class="ctl-ref" style="display:none;">Ref: Castryck, W., Decru, T. <a href="https://eprint.iacr.org/2022/975" target="_blank">[ePrint]</a></div>
+        </div>
+      </div>
+      <div class="ctl-dot d3"></div>
+      <div class="ctl-half ctl-right">
+        <div class="ctl-card" onclick="openModal(this)">
+          <div class="ctl-card-head">
+            <div class="ctl-year">2022</div>
+            <div class="ctl-text">
+              <div class="ctl-title">Damien Robert 算法</div>
+              <div class="ctl-desc">多项式时间计算任意次数同源</div>
+            </div>
+            <div class="ctl-arrow">→</div>
+          </div>
+          <div class="ctl-deep" style="display:none;">
+            <strong>深度介绍：</strong>受 SIDH 攻击启发，Damien Robert 提出通过高维阿贝尔簇，在时间复杂度仅为 $\tilde{O}(\log \ell)$（即关于次数 $\ell$ 为多项式时间）内计算并评估任意 $\ell$ 次同源。这是彻底颠覆 Vélu 体系的理论天花板！
+          </div>
+          <div class="ctl-ref" style="display:none;">Ref: Robert, D. <a href="https://eprint.iacr.org/2022/1038" target="_blank">[ePrint]</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="ctl-modal-overlay" class="ctl-modal-overlay" onclick="closeModal()">
+  <div class="ctl-modal" onclick="event.stopPropagation()">
+    <button class="ctl-modal-close" onclick="closeModal()">×</button>
+    <div class="ctl-modal-header">
+      <div id="ctl-modal-year" class="ctl-year"></div>
+      <div class="ctl-modal-title-box">
+        <div id="ctl-modal-title" class="ctl-title" style="font-size: 1.4rem;"></div>
+        <div id="ctl-modal-desc" class="ctl-desc" style="font-size: 1rem;"></div>
+      </div>
+    </div>
+    <div class="ctl-line" style="position: relative; height: 1px; width: 100%; background: #e2e8f0; margin: 16px 0; left: 0; transform: none;"></div>
+    <div id="ctl-modal-body" class="ctl-modal-body"></div>
+    <div id="ctl-modal-ref" class="ctl-modal-ref"></div>
+  </div>
+</div>
+<style>
+a { font-style: italic; }
+.ctl-wrapper { font-family: system-ui, -apple-system, sans-serif;max-width: 800px; margin: 1.5rem auto; color: #1e293b; font-size: 14px;}
+.ctl-main-title { text-align: center; font-size: 1.4rem; margin-bottom: 1.5rem; color: #0f172a; }
+.ctl-container { position: relative; padding: 10px 0; }
+.ctl-phase { width: max-content; margin: 0 auto 15px auto; padding: 4px 14px; border-radius: 20px; color: #fff; font-weight: 600; font-size: 0.85rem; position: relative; z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.p1 { background: #10b981; }
+.p2 { background: #3b82f6; }
+.p3 { background: #8b5cf6; }
+.ctl-row { display: flex; position: relative; margin-bottom: 12px; justify-content: space-between;
+}
+.ctl-line { position: absolute; left: 50%; top: 0; bottom: -12px; width: 2px; background: #e2e8f0; transform: translateX(-50%); z-index: 1;}
+.ctl-half { width: calc(50% - 15px); position: relative; z-index: 2; }
+.ctl-left { text-align: right; }
+.ctl-right { text-align: left; }
+.ctl-center { width: 100%; display: flex; justify-content: center; position: relative; z-index: 4; }
+.ctl-dot { position: absolute; left: 50%; top: 15px; width: 10px; height: 10px; background: #fff; border: 3px solid; border-radius: 50%; transform: translateX(-50%); z-index: 3; }
+.d1 { border-color: #10b981; }
+.d2 { border-color: #3b82f6; }
+.d3 { border-color: #8b5cf6; }
+.ctl-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+.ctl-center-card { width: 75%; }
+.ctl-milestone { width: 85%; background: #eff6ff; border-color: #bfdbfe; }
+.ctl-card:hover { background: #ffffff; border-color: #cbd5e1; box-shadow: 0 6px 16px rgba(0,0,0,0.06); transform: translateY(-2px); }
+.ctl-card-head { display: flex; align-items: center; gap: 12px; }
+.ctl-year { display: flex; align-items: center; justify-content: center; min-width: 48px; height: 48px; padding: 0 6px; box-sizing: border-box; flex-shrink: 0; font-family: "Georgia", serif; font-weight: 700; font-size: 1.15rem; background: #eef2ff; color: #312e81; border-radius: 8px; }
+.ctl-milestone .ctl-year { background: #3b82f6; color: #fff; }
+.ctl-text { display: flex; flex-direction: column; flex-grow: 1; text-align: left; }
+.ctl-title { font-weight: 700; font-size: 1.1rem; color: #0f172a; margin-bottom: 3px; }
+.ctl-desc { font-size: 0.85rem; color: #64748b; line-height: 1.3; }
+.ctl-arrow { font-size: 1.1rem; color: #94a3b8; flex-shrink: 0; }
+.ctl-card:hover .ctl-arrow { color: #3b82f6; transform: translateX(3px); transition: all 0.2s; }
+.ctl-modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;}
+.ctl-modal-overlay.show { opacity: 1; pointer-events: auto; }
+.ctl-modal { width: 95%; max-width: 850px; padding: 40px 56px; position: relative; max-height: 85vh; overflow-y: auto; border-radius: 0 !important; border: 1px solid #000 !important; background: #fff !important; box-shadow: 8px 8px 0px rgba(0,0,0,0.1) !important; font-family: "Computer Modern", "Times New Roman", Times, serif !important; transform: translateY(20px) scale(0.95); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);}
+.ctl-modal-overlay.show .ctl-modal { transform: translateY(0) scale(1); }
+.ctl-modal-close { position: absolute; top: 16px; right: 16px; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 20px; cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+.ctl-modal-close:hover { background: #e2e8f0; color: #0f172a; }
+.ctl-modal-header { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+.ctl-modal-title-box { display: flex; flex-direction: column; }
+.ctl-modal-body { font-size: 1rem; color: #334155; line-height: 1.7; border-radius: 8px; }
+.ctl-modal-ref { margin-top: 16px; font-size: 1.0rem; color: #64748b; }
+.ctl-modal-ref a { color: #2563eb; text-decoration: none; font-weight: 600; margin-left: 4px; font-style: italic; }
+.ctl-modal-ref a:hover { text-decoration: underline;}
+.ctl-page-text { font-family: "Computer Modern", "Times New Roman", Times, serif; font-size: 1.15rem; color: #000; line-height: 1.8; text-align: justify;}
+.ctl-page-text p { margin-top: 0; margin-bottom: 0.4rem; text-indent: 2em;}
+.ctl-page-text ul, .ctl-page-text ol { margin: 0.5rem 0; padding-left: 2rem; text-indent: 0;}
+.ctl-page-text li { margin-bottom: 0.25rem; text-indent: 0;}
+.ctl-page-text li p { text-indent: 0; margin-bottom: 0;}
+.ctl-page-text strong { font-weight: bold;}
+.ctl-page-text em { font-style: italic;}
+.ctl-page-text code { font-family: "Courier New", Courier, monospace; font-size: 0.95em; background: #f4f4f4; padding: 2px 6px;}
+.ctl-page-text pre { background: #f4f4f4; padding: 16px; border-left: 2px solid #000; overflow-x: auto; text-indent: 0; margin: 1.5rem 0;}
+.ctl-page-text pre code { background: transparent; padding: 0;}
+.ctl-page-text blockquote { margin: 1rem 0; padding-left: 1rem; border-left: 2px solid #000; font-style: italic; text-indent: 0;}
+.ctl-modal-close { border-radius: 0 !important; background: transparent !important; color: #000 !important; border: 1px solid transparent !important; transition: border 0.2s;}
+.ctl-modal-close:hover { border: 1px solid #000 !important;}
+.ctl-page-title { font-family: "Computer Modern", "Times New Roman", Times, serif; font-size: 1.3rem; font-weight: bold; color: #000; margin-bottom: 1.2rem; padding-bottom: 0.5rem; border-bottom: 1px solid #000; text-align: center;}
+.ctl-page-title::after { display: none; }
+.ctl-slider { position: relative; min-height: 220px; overflow: hidden; margin-bottom: 8px;}
+.ctl-slide { position: absolute; top: 0; left: 0; width: 100%; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;}
+.ctl-slide.active { position: relative; opacity: 1; visibility: visible;}
+.ctl-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid #000;}
+.ctl-page-btn { background: #fff; border: 1px solid #000; color: #000; padding: 6px 16px; border-radius: 0; font-family: "Computer Modern", "Times New Roman", Times, serif; font-size: 0.9rem; font-variant: small-caps; cursor: pointer; transition: background 0.2s, color 0.2s;}
+.ctl-page-btn:not(:disabled):hover { background: #000; color: #fff;}
+.ctl-page-btn:disabled { opacity: 0.4; cursor: not-allowed; border-style: dashed;}
+.ctl-dots { display: flex; gap: 8px;}
+.ctl-dot { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; cursor: pointer; transition: background 0.3s, transform 0.2s;}
+.ctl-dot.active { background: #3b82f6; transform: scale(1.2);}
+@media (max-width: 650px) { .ctl-line { left: 12px; } .ctl-dot { left: 12px; transform: translateX(-5px); } .ctl-half { width: calc(100% - 30px); margin-left: 30px !important; margin-right: 0 !important; } .ctl-center-card, .ctl-milestone { width: 100%; } .ctl-modal { padding: 24px 20px; width: 95%; } .ctl-page-title { font-size: 1.5rem; } .ctl-page-text { font-size: 1.05rem; }}
+</style>
+
+<script>
+let currentModalPage = 0;
+let totalModalPages = 0;
+
+function parseMarkdownToPages(rawText) {
+  let mathBlocks = [];
+  let text = rawText.replace(/(\$\$[\s\S]*?\$\$|\$.*?\$)/g, function(m) {
+    mathBlocks.push(m);
+    return '@@MATH@@' + (mathBlocks.length - 1) + '@@';
+  });
+  
+  let pagesRaw = text.split(/^---+$/gm);
+  let pagesHtml = '';
+  
+  pagesRaw.forEach(page => {
+    if (!page.trim()) return;
+    
+    let html = marked.parse(page.trim());
+    
+    html = html.replace(/@@MATH@@(\d+)@@/g, function(m, i) {
+      return mathBlocks[i];
+    });
+    
+    let titleMatch = html.match(/<h[1-6][^>]*>(.*?)<\/h[1-6]>/);
+    let title = titleMatch ? titleMatch[1] : '';
+    let content = html.replace(/<h[1-6][^>]*>.*?<\/h[1-6]>/, '');
+    
+    pagesHtml += '<div class="ctl-page">';
+    if (title) {
+      pagesHtml += '<div class="ctl-page-title">' + title + '</div>';
+    }
+    pagesHtml += '<div class="ctl-page-text">' + content + '</div></div>';
+  });
+  
+  return pagesHtml;
+}
+
+function openModal(card) {
+  document.getElementById('ctl-modal-year').innerHTML = card.querySelector('.ctl-year').innerHTML;
+  document.getElementById('ctl-modal-title').innerHTML = card.querySelector('.ctl-title').innerHTML;
+  document.getElementById('ctl-modal-desc').innerHTML = card.querySelector('.ctl-desc').innerHTML;
+  
+  let refNode = card.querySelector('.ctl-ref');
+  document.getElementById('ctl-modal-ref').innerHTML = refNode ? refNode.innerHTML : '';
+
+  let markdownScript = card.querySelector('.ctl-markdown');
+  let deepContainer = card.querySelector('.ctl-deep');
+  let modalBody = document.getElementById('ctl-modal-body');
+  
+  let pagesHtml = '';
+  
+  if (markdownScript) {
+    pagesHtml = parseMarkdownToPages(markdownScript.textContent);
+  } else if (deepContainer) {
+    pagesHtml = deepContainer.innerHTML;
+  }
+  
+  modalBody.innerHTML = pagesHtml;
+  
+  let pages = modalBody.querySelectorAll('.ctl-page');
+  
+  if (pages.length > 0) {
+    totalModalPages = pages.length;
+    currentModalPage = 0;
+    
+    let sliderHtml = '<div class="ctl-slider">';
+    pages.forEach((page, index) => {
+      let activeClass = index === 0 ? 'active' : '';
+      sliderHtml += '<div class="ctl-slide ' + activeClass + '">' + page.innerHTML + '</div>';
+    });
+    sliderHtml += '</div>';
+
+    let controlsHtml = '<div class="ctl-controls">';
+    controlsHtml += '<button class="ctl-page-btn prev" onclick="navigateModal(-1, event)" disabled>← prev</button>';
+    controlsHtml += '<div class="ctl-dots">';
+    for(let i = 0; i < pages.length; i++) {
+      let activeClass = i === 0 ? 'active' : '';
+      controlsHtml += '<span class="ctl-dot ' + activeClass + '" onclick="jumpModal(' + i + ', event)"></span>';
+    }
+    controlsHtml += '</div>';
+    controlsHtml += '<button class="ctl-page-btn next" onclick="navigateModal(1, event)">next →</button>';
+    controlsHtml += '</div>';
+    
+    modalBody.innerHTML = sliderHtml + controlsHtml;
+  }
+
+  document.getElementById('ctl-modal-overlay').classList.add('show');
+
+  if (window.MathJax) {
+    MathJax.typesetPromise([
+      document.getElementById('ctl-modal-title'),
+      document.getElementById('ctl-modal-body')
+    ]);
+  }
+}
+
+function updateModalUI() {
+  const slides = document.querySelectorAll('#ctl-modal-body .ctl-slide');
+  const dots = document.querySelectorAll('#ctl-modal-body .ctl-dot');
+  const btnPrev = document.querySelector('#ctl-modal-body .ctl-page-btn.prev');
+  const btnNext = document.querySelector('#ctl-modal-body .ctl-page-btn.next');
+
+  slides.forEach((slide, idx) => {
+    slide.classList.toggle('active', idx === currentModalPage);
+  });
+  dots.forEach((dot, idx) => {
+    dot.classList.toggle('active', idx === currentModalPage);
+  });
+  
+  if (btnPrev) btnPrev.disabled = (currentModalPage === 0);
+  if (btnNext) btnNext.disabled = (currentModalPage === totalModalPages - 1);
+}
+
+function navigateModal(direction, event) {
+  if (event) event.stopPropagation();
+  currentModalPage += direction;
+  if (currentModalPage < 0) currentModalPage = 0;
+  if (currentModalPage >= totalModalPages) currentModalPage = totalModalPages - 1;
+  updateModalUI();
+}
+
+function jumpModal(index, event) {
+  if (event) event.stopPropagation();
+  currentModalPage = index;
+  updateModalUI();
+}
+
+function closeModal() {
+  document.getElementById('ctl-modal-overlay').classList.remove('show');
+}
+
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    closeModal();
+  }
+});
+</script>
+
+<ul>
+<li>
+<p><strong>Vélu 公式原始论文</strong>：<a target="_blank" rel="noopener" href="https://aghitza.github.io/publications/translation-velu.pdf">Isogenies between elliptic curves</a></p>
+</li>
+<li>
+<p><strong>优秀的辅助理解材料</strong>：<a target="_blank" rel="noopener" href="https://ocw.mit.edu/courses/18-783-elliptic-curves-spring-2021/a594ab394477ba96f9e8559635265ef1_MIT18_783S21_notes4.pdf">MIT 18.783 Lecture 4</a></p>
+</li>
+<li>
+<p><strong>一个简单的短综述，总结了2017年之前的发展，一直到 Couveignes 算法</strong>：<a target="_blank" rel="noopener" href="https://www.math.ens.psl.eu/shared-files/9712/">Calcul d’isogénies entre courbes elliptiques</a></p>
+</li>
+</ul>
+</section><section class="post-meta"><span class="info"><i class="fa fa-calendar"></i> <span class="date">2026-03-28</span>  </span></section></article><p class="pagination"><a href="/2026/04/01/General0/" title="一轮攻防的Naive理论分析">上一篇</a><span>  </span><a href="/2026/03/18/lattice2/" title="【格理论（二）】Voronoi 胞腔，傅里叶变换与对偶格">下一篇</a></p></main><footer class="footer"><br></footer><script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof pseudocode === 'undefined') {
+        console.warn('pseudocode.js library not loaded, cannot render pseudocode blocks');
+        return;
+      }
+      const pseudocodeElements = document.querySelectorAll('pre.pseudocode');
+      pseudocodeElements.forEach(function(element) {
+        try {
+          pseudocode.renderElement(element);
+        } catch (error) {
+          console.error('Failed to render pseudocode block:', error, element);
+        }
+      });
+    });
+  </script></body></html>
